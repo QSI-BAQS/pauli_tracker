@@ -7,4 +7,6 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-pauli_tracker = { git = "https://github.com/taeruh/pauli_tracker" }
+pauli_tracker = "0.1.0"
+# if we need to be more up to date
+# pauli_tracker = { git = "https://github.com/taeruh/pauli_tracker" }
