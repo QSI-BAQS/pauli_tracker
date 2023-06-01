@@ -8,7 +8,7 @@ use pauli_tracker::{
     tracker::{
         frames::{
             storage::{
-                MappedVector,
+                Map,
                 PauliVec,
                 StackStorage,
             },
@@ -18,8 +18,8 @@ use pauli_tracker::{
     },
 };
 
-pub type Storage = MappedVector;
-pub type PauliTracker = Frames<MappedVector>;
+pub type Storage = Map;
+pub type PauliTracker = Frames<Map>;
 
 #[repr(C)]
 pub struct RawStorage {
@@ -84,23 +84,23 @@ pub extern "C" fn show_dependency_graph(storage: &Storage, map: Slice) {
     println!("{:?}", graph);
 }
 
-#[no_mangle]
-pub extern "C" fn raw_storage(storage: &mut Storage) -> RawStorage {
-    let frames = storage.frames();
-    let inverse_position = storage.inverse_position();
-    RawStorage {
-        frames: RawVec::<PauliVec> {
-            ptr: frames.as_ptr() as *mut PauliVec,
-            len: frames.len(),
-            cap: frames.capacity(),
-        },
-        inverse_position: RawVec::<usize> {
-            ptr: inverse_position.as_ptr() as *mut usize,
-            len: inverse_position.len(),
-            cap: inverse_position.capacity(),
-        },
-    }
-}
+// #[no_mangle]
+// pub extern "C" fn raw_storage(storage: &mut Storage) -> RawStorage {
+//     let frames = storage.frames_num();
+//     let inverse_position = storage.inverse_position();
+//     RawStorage {
+//         frames: RawVec::<PauliVec> {
+//             ptr: frames.as_ptr() as *mut PauliVec,
+//             len: frames.len(),
+//             cap: frames.capacity(),
+//         },
+//         inverse_position: RawVec::<usize> {
+//             ptr: inverse_position.as_ptr() as *mut usize,
+//             len: inverse_position.len(),
+//             cap: inverse_position.capacity(),
+//         },
+//     }
+// }
 
 #[no_mangle]
 pub extern "C" fn put_some_stuff_into_storage(storage: &mut Storage) {
@@ -187,7 +187,7 @@ pub extern "C" fn get_tracker_storage(tracker: &PauliTracker) -> *mut Storage {
 pub extern "C" fn sort_storage(storage: &Storage) -> RawVec<Tuple> {
     let mut ret = storage
         .iter()
-        .map(|(i, p)| Tuple { qubit: i, pauli: p })
+        .map(|(i, p)| Tuple { qubit: *i, pauli: p })
         .collect::<Vec<Tuple>>();
     ret.sort_by_key(|Tuple { qubit: i, .. }| *i);
     let mut ret = ManuallyDrop::new(ret);
@@ -203,20 +203,20 @@ pub extern "C" fn free_sorted_storage(raw_vec: RawVec<Tuple>) {
     unsafe { Vec::from_raw_parts(raw_vec.ptr, raw_vec.len, raw_vec.cap) };
 }
 
-// #[no_mangle]
-// pub extern "C" fn raw_pauli_vec(pauli_vec: &mut PauliVec) -> RawPauliVec {
-//     RawPauliVec {
-//         left: RawVec::<u32> {
-//             ptr: unsafe { pauli_vec.left.storage_mut() }.as_mut_ptr() as *mut u32,
-//             len: pauli_vec.left.storage().len(),
-//             cap: pauli_vec.left.capacity(),
-//         },
-//         left_len: pauli_vec.left.len(),
-//         right: RawVec::<u32> {
-//             ptr: unsafe { pauli_vec.right.storage_mut() }.as_mut_ptr() as *mut u32,
-//             len: pauli_vec.right.storage().len(),
-//             cap: pauli_vec.right.capacity(),
-//         },
-//         right_len: pauli_vec.right.len(),
-//     }
-// }
+#[no_mangle]
+pub extern "C" fn raw_pauli_vec(pauli_vec: &mut PauliVec) -> RawPauliVec {
+    RawPauliVec {
+        left: RawVec::<u32> {
+            ptr: unsafe { pauli_vec.left.storage_mut() }.as_mut_ptr() as *mut u32,
+            len: pauli_vec.left.storage().len(),
+            cap: pauli_vec.left.capacity(),
+        },
+        left_len: pauli_vec.left.len(),
+        right: RawVec::<u32> {
+            ptr: unsafe { pauli_vec.right.storage_mut() }.as_mut_ptr() as *mut u32,
+            len: pauli_vec.right.storage().len(),
+            cap: pauli_vec.right.capacity(),
+        },
+        right_len: pauli_vec.right.len(),
+    }
+}
