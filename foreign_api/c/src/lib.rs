@@ -3,13 +3,16 @@
 
 use std::mem::ManuallyDrop;
 
+use bit_vec::BitVec;
 use pauli_tracker::{
-    pauli::Pauli,
+    pauli::{
+        self,
+        Pauli,
+    },
     tracker::{
         frames::{
             storage::{
                 Map,
-                PauliVec,
                 StackStorage,
             },
             Frames,
@@ -18,14 +21,15 @@ use pauli_tracker::{
     },
 };
 
-pub type Storage = Map;
-pub type PauliTracker = Frames<Map>;
+pub type PauliVec = pauli::PauliVec<BitVec>;
+pub type Storage = Map<BitVec>;
+pub type PauliTracker = Frames<Storage>;
 
-#[repr(C)]
-pub struct RawStorage {
-    frames: RawVec<PauliVec>,
-    inverse_position: RawVec<usize>,
-}
+// #[repr(C)]
+// pub struct RawStorage {
+//     frames: RawVec<PauliVec>,
+//     inverse_position: RawVec<usize>,
+// }
 
 #[repr(C)]
 pub struct RawVec<T> {
