@@ -8,6 +8,4 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 bit-vec = "0.6.3"
-# if we need to be more up to date
 pauli_tracker = { git = "https://github.com/taeruh/pauli_tracker", rev = "fd19ab2", features = ["bit-vec"] }
-# pauli_tracker = "0.1.0"

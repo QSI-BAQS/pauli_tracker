@@ -1,0 +1,12 @@
+[package]
+name = "bindings"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.pauli_tracker]
+version = "0.3.0-alpha.3"
+# path = "../../../pauli_tracker"
+git = "https://github.com/taeruh/pauli_tracker"
+rev = "7e1dbed66322ea89ec24eb0f4105931e0cee8d77"
+features = ["serde"]
+# features = ["bitvec"]

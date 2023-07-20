@@ -1,9 +1,0 @@
-# I had problems with globs and the exclude array, so I just' don't use globs
-[workspace]
-members = [
-  "foreign_api/c",
-  "xtask",
-]
-default-members = [
-  "foreign_api/c",
-]
