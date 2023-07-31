@@ -1,8 +1,0 @@
-clang
--Wall
--Wextra
--pedantic
-%cpp %hpp -std=c++20
--Iinclude/app
--Iinclude/private
--I../tracker/build/output
