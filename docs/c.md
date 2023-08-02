@@ -32,7 +32,9 @@ correspinding directories) documentation and how we use them in
 
 *Note that [gen_bind] is effectively just a simple, restricted wrapper around [cbindgen]
 to help getting started. If things get a little bit more complicated one should use
-[cbindgen] directly (it's really simple).*
+cbindgen directly (it's really simple) and gen_bind's cbindgen configuration maybe as
+initial template. Also note, that while cbindgen does a pretty good job for most
+use cases, one might to customize the output in certain cases.*
 
 ### Notes about cbindgen
 

@@ -10,12 +10,12 @@ use syn::{
     Token,
 };
 
-struct Tracker {
+struct Gen {
     typ: Ident,
     pre: Ident,
 }
 
-impl Parse for Tracker {
+impl Parse for Gen {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let typ = input.parse()?;
         input.parse::<Token![,]>()?;
@@ -32,14 +32,49 @@ fn concat(left: &str, right: &str, span: proc_macro2::Span) -> Ident {
 }
 
 #[proc_macro]
-pub fn tracker_boilerplate(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as Tracker);
+pub fn base(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as Gen);
+    let typ = input.typ;
+    let span = input.pre.span();
+    let pre = &input.pre.to_string();
+
+    let new = concat(pre, "new", span);
+    let free = concat(pre, "free", span);
+    let serialize = concat(pre, "serialize", span);
+
+    quote! {
+        #[no_mangle]
+        pub extern "C-unwind" fn #new() -> *mut #typ {
+            ManuallyDrop::new(Box::new(#typ::default())).as_mut() as *mut #typ
+        }
+
+        /// # Safety
+        #[no_mangle]
+        pub unsafe extern "C-unwind" fn #free(x: *mut #typ) {
+            unsafe { Box::from_raw(x) };
+        }
+
+        #[no_mangle]
+        pub extern "C-unwind"
+        fn #serialize(x: &#typ, file: *const std::ffi::c_char) {
+            let file = unsafe {
+                std::ffi::CStr::from_ptr(file as *const i8)
+            }.to_str().unwrap();
+            let output = serde_json::to_string(x).unwrap();
+            std::fs::write(file, output).unwrap();
+        }
+    }
+    .into()
+}
+
+#[proc_macro]
+pub fn tracker(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as Gen);
     let typ = input.typ;
     let span = input.pre.span();
     let pre = &input.pre.to_string();
 
     let init = concat(pre, "init", span);
-    let free = concat(pre, "free", span);
     let track_x = concat(pre, "track_x", span);
     let track_y = concat(pre, "track_y", span);
     let track_z = concat(pre, "track_z", span);
@@ -53,12 +88,6 @@ pub fn tracker_boilerplate(input: TokenStream) -> TokenStream {
         #[no_mangle]
         pub extern "C-unwind" fn #init(num_qubits: usize) -> *mut #typ {
             ManuallyDrop::new(Box::new(#typ::init(num_qubits))).as_mut() as *mut #typ
-        }
-
-        /// # Safety
-        #[no_mangle]
-        pub unsafe extern "C-unwind" fn #free(tracker: *mut #typ) {
-            unsafe { Box::from_raw(tracker) };
         }
 
         #[no_mangle]
@@ -99,28 +128,6 @@ pub fn tracker_boilerplate(input: TokenStream) -> TokenStream {
         #[no_mangle]
         pub extern "C-unwind" fn #new_qubit(tracker: &mut #typ, qubit: usize) {
             tracker.new_qubit(qubit);
-        }
-    }
-    .into()
-}
-
-#[proc_macro]
-pub fn serialize(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as Tracker);
-    let typ = input.typ;
-    let span = input.pre.span();
-    let pre = &input.pre.to_string();
-
-    let ser = concat(pre, "serialize", span);
-
-    quote! {
-        #[no_mangle]
-        pub extern "C-unwind" fn #ser(storage: &#typ, file: *const std::ffi::c_char) {
-            let file = unsafe {
-                std::ffi::CStr::from_ptr(file as *const i8)
-            }.to_str().unwrap();
-            let output = serde_json::to_string(storage).unwrap();
-            std::fs::write(file, output).unwrap();
         }
     }
     .into()

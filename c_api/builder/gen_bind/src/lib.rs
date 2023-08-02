@@ -187,7 +187,9 @@ impl Generator<Initialized> {
             std::process::exit(1);
         }
 
-        a.expect("unable to generate bindings").write_to_file(
+        let a = a.expect("unable to generate bindings");
+
+        a.write_to_file(
             self.config
                 .output_dir
                 .unwrap_or_else(|| PathBuf::from("."))

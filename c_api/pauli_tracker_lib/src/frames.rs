@@ -5,10 +5,7 @@ use std::{
 
 use impl_api::*;
 use pauli_tracker::{
-    collection::{
-        Init,
-        Map,
-    },
+    collection::Map,
     pauli::PauliStack,
     tracker::{
         frames,
@@ -21,18 +18,10 @@ type BoolVec = bit_vec::BitVec;
 type Storage = Map<PauliStack<BoolVec>, BuildHasherDefault<FxHasher>>;
 type Frames = frames::Frames<Storage>;
 
-#[no_mangle]
-pub extern "C-unwind" fn storage_new() -> *mut Storage {
-    ManuallyDrop::new(Box::new(Storage::init(0))).as_mut() as *mut Storage
-}
+base!(Storage, storage_);
 
-/// # Safety
-#[no_mangle]
-pub unsafe extern "C-unwind" fn storage_free(storage: *mut Storage) {
-    unsafe { Box::from_raw(storage) };
-}
-
-tracker_boilerplate!(Frames, frames_);
+base!(Frames, frames_);
+tracker!(Frames, frames_);
 
 #[no_mangle]
 pub extern "C-unwind" fn measure_and_store(
@@ -52,8 +41,9 @@ pub extern "C-unwind" fn measure_and_store(
 // }
 
 #[no_mangle]
-pub extern "C-unwind" fn measure_and_store_all(tracker: &mut Frames, storage: &mut Storage) {
+pub extern "C-unwind" fn measure_and_store_all(
+    tracker: &mut Frames,
+    storage: &mut Storage,
+) {
     tracker.measure_and_store_all(storage);
 }
-
-serialize!(Storage, storage_);

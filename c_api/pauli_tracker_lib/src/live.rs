@@ -1,28 +1,39 @@
-use std::mem::ManuallyDrop;
+#![allow(non_camel_case_types)]
 
+use std::{
+    hash::BuildHasherDefault,
+    mem::ManuallyDrop,
+};
+
+use impl_api::*;
 use pauli_tracker::{
-    collection::BufferedVector,
-    pauli::PauliTuple,
+    collection::{
+        BufferedVector,
+        Map,
+    },
+    pauli::{
+        PauliDense,
+        PauliEnum,
+        PauliTuple,
+    },
     tracker::{
         live,
         Tracker,
     },
 };
-use impl_api::*;
+use rustc_hash::FxHasher;
 
-// type Live = live::Live<BufferedVector<PauliDense>>;
-type Live = live::Live<BufferedVector<PauliTuple>>;
+/// There are no live_hmpefx_* functions, instead they are named live_*.
+type Live_hmpefx = live::Live<Map<PauliEnum, BuildHasherDefault<FxHasher>>>;
+type Live = Live_hmpefx;
+type Live_bvpd = live::Live<BufferedVector<PauliDense>>;
+type Live_bvpt = live::Live<BufferedVector<PauliTuple>>;
 
-#[no_mangle]
-pub extern "C-unwind" fn new_live() -> *mut Live {
-    ManuallyDrop::new(Box::new(Live::init(0))).as_mut() as *mut Live
+macro_rules! boilerplate {
+    ($(($typ:ty, $pre:tt),)*) => {$(
+        base!($typ, $pre);
+        tracker!($typ, $pre);
+    )*};
 }
 
-/// # Safety
-#[no_mangle]
-pub unsafe extern "C-unwind" fn free_live(live: *mut Live) {
-    unsafe { Box::from_raw(live) };
-}
-
-tracker_boilerplate!(Live, live_);
-serialize!(Live, live_);
+boilerplate!((Live, live_), (Live_bvpd, live_bvpd_), (Live_bvpt, live_bvpt_),);
