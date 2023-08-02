@@ -114,10 +114,30 @@ impl Generator<Uninitialized> {
             std::env::set_var("RUSTUP_TOOLCHAIN", "nightly");
         }
 
-        let config = self.config.cbindgen_config.clone().unwrap_or_else(|| Config {
-            cpp_compat: true,
-            language: Language::C,
-            parse: ParseConfig {
+        // let config = self.config.cbindgen_config.clone().unwrap_or_else(|| Config {
+        //     cpp_compat: true,
+        //     language: Language::C,
+        //     parse: ParseConfig {
+        //         parse_deps: true,
+        //         include: Some(vec!["pauli_tracker".into()]),
+        //         expand: if self.config.expand_macros {
+        //             cbindgen::ParseExpandConfig {
+        //                 crates: vec![self.crate_name.clone()],
+        //                 ..Default::default()
+        //             }
+        //         } else {
+        //             Default::default()
+        //         },
+        //         ..Default::default()
+        //     },
+        //     ..Default::default()
+        // });
+
+        let config = self.config.cbindgen_config.clone().unwrap_or_else(|| {
+            let mut config: Config = Default::default();
+            config.cpp_compat = true;
+            config.language = Language::C;
+            config.parse = ParseConfig {
                 parse_deps: true,
                 include: Some(vec!["pauli_tracker".into()]),
                 expand: if self.config.expand_macros {
@@ -129,8 +149,8 @@ impl Generator<Uninitialized> {
                     Default::default()
                 },
                 ..Default::default()
-            },
-            ..Default::default()
+            };
+            config
         });
 
         Generator {

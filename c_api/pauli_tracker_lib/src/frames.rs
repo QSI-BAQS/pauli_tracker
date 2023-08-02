@@ -22,20 +22,20 @@ type Storage = Map<PauliStack<BoolVec>, BuildHasherDefault<FxHasher>>;
 type Frames = frames::Frames<Storage>;
 
 #[no_mangle]
-pub extern "C" fn storage_new() -> *mut Storage {
+pub extern "C-unwind" fn storage_new() -> *mut Storage {
     ManuallyDrop::new(Box::new(Storage::init(0))).as_mut() as *mut Storage
 }
 
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn storage_free(storage: *mut Storage) {
+pub unsafe extern "C-unwind" fn storage_free(storage: *mut Storage) {
     unsafe { Box::from_raw(storage) };
 }
 
 tracker_boilerplate!(Frames, frames_);
 
 #[no_mangle]
-pub extern "C" fn measure_and_store(
+pub extern "C-unwind" fn measure_and_store(
     tracker: &mut Frames,
     qubit: usize,
     storage: &mut Storage,
@@ -45,14 +45,14 @@ pub extern "C" fn measure_and_store(
 
 // tuples are not supported -> own tuple type
 // #[no_mangle]
-// pub extern "C" fn sort_by_key(
+// pub extern "C-unwind" fn sort_by_key(
 //     storage: &mut Storage,
 // ) -> *mut Vec<(usize, &<Storage as IterableBase>::T)> {
 //     ManuallyDrop::new(Box::new(storage.sort_by_key())).as_mut() as *mut _
 // }
 
 #[no_mangle]
-pub extern "C" fn measure_and_store_all(tracker: &mut Frames, storage: &mut Storage) {
+pub extern "C-unwind" fn measure_and_store_all(tracker: &mut Frames, storage: &mut Storage) {
     tracker.measure_and_store_all(storage);
 }
 

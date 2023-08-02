@@ -1,53 +1,53 @@
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-builtin-variables
 
-name = example_usage
+name := example_usage
 
-src = src
-include_dir = include/$(name)
-target = target
-debug_directory = $(target)/debug
-release_directory = $(target)/release
-debug_tmp = $(debug_directory)/tmp
-debug = $(debug_directory)/$(name)
-release = $(release_directory)/$(name)
+src := src
+include_dir := include/$(name)
+target := target
+debug_directory := $(target)/debug
+release_directory := $(target)/release
+debug_tmp := $(debug_directory)/tmp
+debug := $(debug_directory)/$(name)
+release := $(release_directory)/$(name)
 
-sources = $(shell find $(src) -name '*.cpp')
-headers = $(shell find $(include_dir) -name '*.hpp')
+sources := $(shell find $(src) -name '*.cpp')
+headers := $(shell find $(include_dir) -name '*.hpp')
 
-objs = $(sources:$(src)/%.cpp=$(debug_tmp)/%.o)
-deps = $(objs:.o=.d)
-
-
-pauli_tracker = pauli_tracker
-pauli_tracker_directory = ../output
-
-pauli_tracker_static = -Wl,-Bstatic -l$(pauli_tracker) -Wl,-Bdynamic
-pauli_tracker_dynamic = -l$(pauli_tracker) -Wl,-rpath=$(pauli_tracker_path)
+objs := $(sources:$(src)/%.cpp=$(debug_tmp)/%.o)
+deps := $(objs:.o=.d)
 
 
-std = -std=c++20
-err = -Wall -Wextra -pedantic
-op = -O3
+pauli_tracker := pauli_tracker
+pauli_tracker_directory := ../output
 
-lto = -flto
-
-deps_generation = -MMD -MP
+pauli_tracker_static := -Wl,-Bstatic -l$(pauli_tracker) -Wl,-Bdynamic
+pauli_tracker_dynamic := -l$(pauli_tracker) -Wl,-rpath=$(pauli_tracker_path)
 
 
-CXX = clang++
+std := -std=c++20
+err := -Wall -Wextra -pedantic
+op := -O3
 
-include_headers = -I $(include_dir) -I $(pauli_tracker_directory)
-LD_LIBRARY_PATH = -L $(pauli_tracker_directory)
+lto := -flto
 
-CPPFLAGS = $(deps_generation)
+deps_generation := -MMD -MP
 
-CFLAGS = $(err) $(std) $(include_headers)
 
-LDLIBS = $(pauli_tracker_static)
+CXX := clang++
+
+include_headers := -I $(include_dir) -I $(pauli_tracker_directory)
+LD_LIBRARY_PATH := -L $(pauli_tracker_directory)
+
+CPPFLAGS := $(deps_generation)
+
+CFLAGS := $(err) $(std) $(include_headers)
+
+LDLIBS := $(pauli_tracker_static)
 # dynamic is usually a bad idea when it is not installed on the system
-# LDLIBS = $(pauli_tracker_dynamic)
-LDFLAGS = $(LD_LIBRARY_PATH)
+# LDLIBS := $(pauli_tracker_dynamic)
+LDFLAGS := $(LD_LIBRARY_PATH)
 
 
 .PHONY: clean update_debug_tmp

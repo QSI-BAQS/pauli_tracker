@@ -51,53 +51,53 @@ pub fn tracker_boilerplate(input: TokenStream) -> TokenStream {
 
     quote! {
         #[no_mangle]
-        pub extern "C" fn #init(num_qubits: usize) -> *mut #typ {
+        pub extern "C-unwind" fn #init(num_qubits: usize) -> *mut #typ {
             ManuallyDrop::new(Box::new(#typ::init(num_qubits))).as_mut() as *mut #typ
         }
 
         /// # Safety
         #[no_mangle]
-        pub unsafe extern "C" fn #free(tracker: *mut #typ) {
+        pub unsafe extern "C-unwind" fn #free(tracker: *mut #typ) {
             unsafe { Box::from_raw(tracker) };
         }
 
         #[no_mangle]
-        pub extern "C" fn #track_x(tracker: &mut #typ, qubit: usize) {
+        pub extern "C-unwind" fn #track_x(tracker: &mut #typ, qubit: usize) {
             tracker.track_x(qubit);
         }
 
         #[no_mangle]
-        pub extern "C" fn #track_y(tracker: &mut #typ, qubit: usize) {
+        pub extern "C-unwind" fn #track_y(tracker: &mut #typ, qubit: usize) {
             tracker.track_y(qubit);
         }
 
         #[no_mangle]
-        pub extern "C" fn #track_z(tracker: &mut #typ, qubit: usize) {
+        pub extern "C-unwind" fn #track_z(tracker: &mut #typ, qubit: usize) {
             tracker.track_z(qubit);
         }
 
         #[no_mangle]
-        pub extern "C" fn #h(tracker: &mut #typ, qubit: usize) {
+        pub extern "C-unwind" fn #h(tracker: &mut #typ, qubit: usize) {
             tracker.h(qubit);
         }
 
         #[no_mangle]
-        pub extern "C" fn #s(tracker: &mut #typ, qubit: usize) {
+        pub extern "C-unwind" fn #s(tracker: &mut #typ, qubit: usize) {
             tracker.s(qubit);
         }
 
         #[no_mangle]
-        pub extern "C" fn #cx(tracker: &mut #typ, control: usize, target: usize) {
+        pub extern "C-unwind" fn #cx(tracker: &mut #typ, control: usize, target: usize) {
             tracker.cx(control, target);
         }
 
         #[no_mangle]
-        pub extern "C" fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+        pub extern "C-unwind" fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
             tracker.cz(qubit_a, qubit_b);
         }
 
         #[no_mangle]
-        pub extern "C" fn #new_qubit(tracker: &mut #typ, qubit: usize) {
+        pub extern "C-unwind" fn #new_qubit(tracker: &mut #typ, qubit: usize) {
             tracker.new_qubit(qubit);
         }
     }
@@ -115,7 +115,7 @@ pub fn serialize(input: TokenStream) -> TokenStream {
 
     quote! {
         #[no_mangle]
-        pub extern "C" fn #ser(storage: &#typ, file: *const std::ffi::c_char) {
+        pub extern "C-unwind" fn #ser(storage: &#typ, file: *const std::ffi::c_char) {
             let file = unsafe {
                 std::ffi::CStr::from_ptr(file as *const i8)
             }.to_str().unwrap();

@@ -4,9 +4,12 @@ The relevant code is in the [c_api](../c_api) directory.
 
 ## Compiling the library
 
-Run `make` (or do what the makefile does if not on Linux) to generate a static and
+Run `make` (or do what the makefile does if not on Linux) to generate a static and a
 dynamic library as well as the corresponding header file. The files are located in
 `output`.
+
+**Note**: The compilation of the libraries requires a fairly new Rust version (>= 1.71)
+and the generation of the header file requires that a nightly toolchain is installed.
 
 If the provided functionality is not, enough check out the next section.
 
