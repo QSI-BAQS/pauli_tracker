@@ -19,7 +19,7 @@ objs := $(sources:$(src)/%.cpp=$(debug_tmp)/%.o)
 deps := $(objs:.o=.d)
 
 
-pauli_tracker := pauli_tracker
+pauli_tracker := pauli_tracker_clib
 pauli_tracker_directory := ../output
 
 pauli_tracker_static := -Wl,-Bstatic -l$(pauli_tracker) -Wl,-Bdynamic

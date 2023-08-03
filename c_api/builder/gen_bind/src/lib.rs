@@ -71,6 +71,9 @@ pub struct GeneratorConfig {
     /// toolchain is installed. If you don't define any extern "C" functions through
     /// macros, you can set this to false.
     pub expand_macros: bool,
+    /// A list of crate names to include in the bindings, will default to
+    /// ["pauli_tracker"].
+    pub includes: Option<Vec<String>>,
     /// The language to generate bindings for, will default to C.
     pub lang: Language,
     /// The original cbindgen configuration options. If this value is not `None`, it
@@ -114,32 +117,18 @@ impl Generator<Uninitialized> {
             std::env::set_var("RUSTUP_TOOLCHAIN", "nightly");
         }
 
-        // let config = self.config.cbindgen_config.clone().unwrap_or_else(|| Config {
-        //     cpp_compat: true,
-        //     language: Language::C,
-        //     parse: ParseConfig {
-        //         parse_deps: true,
-        //         include: Some(vec!["pauli_tracker".into()]),
-        //         expand: if self.config.expand_macros {
-        //             cbindgen::ParseExpandConfig {
-        //                 crates: vec![self.crate_name.clone()],
-        //                 ..Default::default()
-        //             }
-        //         } else {
-        //             Default::default()
-        //         },
-        //         ..Default::default()
-        //     },
-        //     ..Default::default()
-        // });
-
         let config = self.config.cbindgen_config.clone().unwrap_or_else(|| {
             let mut config: Config = Default::default();
             config.cpp_compat = true;
             config.language = Language::C;
             config.parse = ParseConfig {
                 parse_deps: true,
-                include: Some(vec!["pauli_tracker".into()]),
+                include: Some(
+                    self.config
+                        .includes
+                        .clone()
+                        .unwrap_or_else(|| vec!["pauli_tracker".into()]),
+                ),
                 expand: if self.config.expand_macros {
                     cbindgen::ParseExpandConfig {
                         crates: vec![self.crate_name.clone()],
@@ -180,32 +169,26 @@ impl Generator<Initialized> {
             fs::create_dir_all(dir).expect("cannot create output directory");
         }
 
-        let a = self.builder.with_language(self.config.lang).generate();
-
-        if let Err(e) = a {
-            println!("error: {}", e);
-            std::process::exit(1);
-        }
-
-        let a = a.expect("unable to generate bindings");
-
-        a.write_to_file(
-            self.config
-                .output_dir
-                .unwrap_or_else(|| PathBuf::from("."))
-                .join(format!(
-                    "{}.{}",
-                    self.config.header_name.unwrap_or(self.crate_name),
-                    self.config.header_suffix.unwrap_or_else(|| {
-                        match self.config.lang {
-                            Language::C => "h",
-                            Language::Cxx => "hpp",
-                            Language::Cython => "pxd",
-                        }
-                        .into()
-                    })
-                )),
-        )
+        self.builder
+            .with_language(self.config.lang)
+            .generate()
+            .expect("unable to generate bindings")
+            .write_to_file(
+                self.config.output_dir.unwrap_or_else(|| PathBuf::from(".")).join(
+                    format!(
+                        "{}.{}",
+                        self.config.header_name.unwrap_or(self.crate_name),
+                        self.config.header_suffix.unwrap_or_else(|| {
+                            match self.config.lang {
+                                Language::C => "h",
+                                Language::Cxx => "hpp",
+                                Language::Cython => "pxd",
+                            }
+                            .into()
+                        })
+                    ),
+                ),
+            )
     }
 }
 
@@ -216,6 +199,7 @@ impl Default for GeneratorConfig {
             output_dir: None,
             header_name: None,
             header_suffix: None,
+            includes: None,
             expand_macros: true,
             lang: Language::C,
             cbindgen_config: None,
@@ -244,6 +228,15 @@ impl GeneratorConfig {
     /// Set the `header_suffix` option.
     pub fn header_name<T: Into<String>>(mut self, header_name: T) -> Self {
         self.header_name = Some(header_name.into());
+        self
+    }
+
+    /// Set the `includes` option.
+    pub fn includes<T: IntoIterator<Item = S>, S: Into<String>>(
+        mut self,
+        includes: T,
+    ) -> Self {
+        self.includes = Some(includes.into_iter().map(|s| s.into()).collect());
         self
     }
 
