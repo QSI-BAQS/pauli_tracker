@@ -8,7 +8,7 @@ Run `make` (or do what the makefile does if not on Linux) to generate a static a
 dynamic library as well as the corresponding header file. The files are located in
 `output`.
 
-Read the top level documentation of [pauli_tracker_lib](../c_api/pauli_tracker_lib/)
+Read the top level documentation of [pauli_tracker_clib]
 (create it with `cargo doc --open` in the directory)!
 
 **Note**: The compilation of the libraries requires a fairly new Rust version (>= 1.71)
@@ -36,7 +36,7 @@ The [gen_bind] crate (a wrapper around [cbindgen]) can then be used to automatic
 generate the corresponding C header files (it can also generate C++, and Cython headers,
 but they might need manual adjustments). Check out their documentation (run `cargo doc
 --open` in the correspinding directories) and how we use them in
-[pauli_tracker_lib](../c_api/pauli_tracker_lib) (the wrapper around [pauli_tracker]) and
+[pauli_tracker_clib] (the wrapper around [pauli_tracker]) and
 [generate_bindings](../c_api/generate_bindings).
 
 You can use this to build your own library similar to how we do it. You don't have to
@@ -60,6 +60,7 @@ use cases, one might to customize the output in certain cases.*
 - Default generic parameters are problematic, just specify them.
 
 [pauli_tracker]: https://github.com/taeruh/pauli_tracker
+[pauli_tracker_clib]: ../c_api/pauli_tracker_clib/
 [gen_bind]: ../bind/c_api/builder/gen_bind
 [cbindgen]: https://github.com/mozilla/cbindgen
 [imp_api]: ../c_api/builder/impl_api/

@@ -1,48 +1,51 @@
+# unnecessary complex for the current use case, but it will pay off later
+
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-builtin-variables
 
 name := example_usage
-
 src := src
-include_dir := include/$(name)
-target := target
-debug_directory := $(target)/debug
-release_directory := $(target)/release
-debug_tmp := $(debug_directory)/tmp
-debug := $(debug_directory)/$(name)
-release := $(release_directory)/$(name)
+# include_dir := include/$(name)
+# include_private_dir := include/private
+target_dir := target
+debug_dir := $(target_dir)/debug
+release_dir := $(target_dir)/release
+debug_build_dir := $(debug_dir)/build
+release_build_dir := $(release_dir)/build
 
+srcdirs := $(shell find $(src) -type d)
 sources := $(shell find $(src) -name '*.cpp')
-headers := $(shell find $(include_dir) -name '*.hpp')
+# headers := $(shell find $(include_dir) -name '*.hpp')
+# private_headers := $(shell find $(include_private_dir) -name '*.hpp')
 
-objs := $(sources:$(src)/%.cpp=$(debug_tmp)/%.o)
-deps := $(objs:.o=.d)
+debug_build_tree := $(srcdirs:$(src)%=$(debug_build_dir)%/)
+debug_objs := $(sources:$(src)/%.cpp=$(debug_build_dir)/%.o)
+debug_deps := $(objs:.o=.d)
 
 
 pauli_tracker := pauli_tracker_clib
 pauli_tracker_directory := ../output
 
 pauli_tracker_static := -Wl,-Bstatic -l$(pauli_tracker) -Wl,-Bdynamic
-pauli_tracker_dynamic := -l$(pauli_tracker) -Wl,-rpath=$(pauli_tracker_path)
+pauli_tracker_dynamic := -l$(pauli_tracker) -Wl,-rpath=$(pauli_tracker_directory)
 
 
 std := -std=c++20
 err := -Wall -Wextra -pedantic
 op := -O3
-
 lto := -flto
-
 deps_generation := -MMD -MP
 
 
 CXX := clang++
 
-include_headers := -I $(include_dir) -I $(pauli_tracker_directory)
+# HEADER_PATH := -I $(include_dir) -I $(pauli_tracker_directory)
+HEADER_PATH := -I $(pauli_tracker_directory)
 LD_LIBRARY_PATH := -L $(pauli_tracker_directory)
 
 CPPFLAGS := $(deps_generation)
 
-CFLAGS := $(err) $(std) $(include_headers)
+CFLAGS := $(err) $(std) $(HEADER_PATH)
 
 LDLIBS := $(pauli_tracker_static)
 # dynamic is usually a bad idea when it is not installed on the system
@@ -50,42 +53,70 @@ LDLIBS := $(pauli_tracker_static)
 LDFLAGS := $(LD_LIBRARY_PATH)
 
 
-.PHONY: clean update_debug_tmp
+define default_message =
+There are a few standard rules
+ - init_debug: initialize the $(target_dir) directory for a debug build
+ - init_release: initialize the $(target_dir) directory for a debug build
+ - init_all: initialize the $(target_dir) directory for both builds
+ - build: shorthand for build_debug
+ - run: shorthand for run_debug
+ - build_debug: build the debug build
+ - run_debug: build and run the debug build
+ - build_release: build the release build
+ - run_release: build and run the release build
+ - clean_$(target_dir): remove the $(target_dir) directory
+ - clean: clean up but run init_all afterwards
+ - clean_full: clean everything
+ - default: this message
+Before the first build, or when rebuilding after cleaning, one has to run the according
+init rule again (except for `clean`).
+The resulting executables are in $(debug_dir) and $(release_dir), respectively.
+endef
+export default_message
+default:
+	@echo "$$default_message"
 
-main: $(debug)
 
-# debug: $(debug)
-# release: $(release)
+debug := $(debug_dir)/$(name)
+release := $(release_dir)/$(name)
 
 
-$(debug): $(objs)
+run: run_debug
+build: debug
+run_debug: build_debug
+	./$(debug)
+run_release: build_release
+	./$(release)
+build_debug: $(debug)
+build_release: $(release)
+
+
+$(debug): $(debug_objs)
 	$(CXX) -o $@ $^ $(LDLIBS) $(LDFLAGS)
 
--include $(deps)
+-include $(debug_deps)
 
-$(debug_tmp)/%.o:
-	$(CXX) -c -o $@ $(@:$(debug_tmp)/%.o=$(src)/%.cpp) $(CPPFLAGS) $(CFLAGS)
+$(debug_build_dir)/%.o: $(src)/%.cpp
+	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CFLAGS)
 
 
 $(release): $(sources) $(headers)
 	$(CXX) -o $@ $(sources) $(CFLAGS) $(op) $(LDFLAGS) $(lto) $(LDLIBS)
 
 
-
-update_debug_tmp:
-	@mkdir -p $(target)/release
-	@for d in $$(find $(src) -type d); do\
-		mkdir -p "$$(echo $$d | sed 's|src|$(debug_tmp)|')";\
-	done;\
-	for d in $$(find $(debug_tmp) -type d); do\
-		echo $$d;\
-		if [ -z \
-			"$$(find $(src) -type d -wholename $$(echo $$d|sed 's|$(debug_tmp)|src|'))"\
-		]; then\
-			rm -rf $$d;\
-		fi;\
-	done
+init_all: init_debug init_release
+init_debug: | $(debug_build_tree)
+init_release: | $(release_dir)/
+%/:
+	@mkdir -p $@
 
 
-clean:
-	rm -f $(debug) $(release) $(objs) $(deps)
+clean: clean_$(target_dir) init_all
+clean_full: clean_$(target_dir)
+	@rm -rf output
+clean_$(target_dir):
+	@rm -rf $(target_dir)
+
+
+.PHONY := default init_all init_debug init_release clean clean_for_real \
+					clean_$(target_dir) run build run_debug build_debug run_release build_release

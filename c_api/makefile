@@ -1,6 +1,6 @@
 output := output
 
-.PHONY: libs header
+.PHONY: build libs header
 
 build: libs header
 
