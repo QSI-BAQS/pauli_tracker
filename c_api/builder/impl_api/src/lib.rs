@@ -283,10 +283,24 @@ pub fn tracker(input: TokenStream) -> TokenStream {
     let track_x = pre.name("track_x");
     let track_y = pre.name("track_y");
     let track_z = pre.name("track_z");
+
     let h = pre.name("h");
     let s = pre.name("s");
-    let cx = pre.name("cx");
     let cz = pre.name("cz");
+
+    let x = pre.name("x");
+    let y = pre.name("y");
+    let z = pre.name("z");
+    let sdg = pre.name("sdg");
+    let sx = pre.name("sx");
+    let sxdg = pre.name("sxdg");
+    let sy = pre.name("sy");
+    let sydg = pre.name("sydg");
+    let sz = pre.name("sz");
+    let szdg = pre.name("szdg");
+
+    let cx = pre.name("cx");
+
     let new_qubit = pre.name("new_qubit");
 
     quote! {
@@ -309,21 +323,56 @@ pub fn tracker(input: TokenStream) -> TokenStream {
         pub extern "C-unwind" fn #h(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::h(tracker, qubit);
         }
-
         #[no_mangle]
         pub extern "C-unwind" fn #s(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::s(tracker, qubit);
         }
+        #[no_mangle]
+        pub extern "C-unwind" fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+            <#typ as Tracker>::cz(tracker, qubit_a, qubit_b);
+        }
+
+        #[no_mangle]
+        pub extern "C-unwind" fn #x(_: &mut #typ, _: usize) {}
+        #[no_mangle]
+        pub extern "C-unwind" fn #y(_: &mut #typ, _: usize) {}
+        #[no_mangle]
+        pub extern "C-unwind" fn #z(_: &mut #typ, _: usize) {}
+        #[no_mangle]
+        pub extern "C-unwind" fn #sdg(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sdg(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C-unwind" fn #sx(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sx(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C-unwind" fn #sxdg(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sxdg(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C-unwind" fn #sy(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sy(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C-unwind" fn #sydg(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sydg(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C-unwind" fn #sz(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sz(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C-unwind" fn #szdg(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::szdg(tracker, qubit);
+        }
+
 
         #[no_mangle]
         pub extern "C-unwind" fn #cx(tracker: &mut #typ, control: usize, target: usize) {
             <#typ as Tracker>::cx(tracker, control, target);
         }
 
-        #[no_mangle]
-        pub extern "C-unwind" fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
-            <#typ as Tracker>::cz(tracker, qubit_a, qubit_b);
-        }
 
         #[no_mangle]
         pub extern "C-unwind" fn #new_qubit(tracker: &mut #typ, qubit: usize) {

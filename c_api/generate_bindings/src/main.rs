@@ -19,7 +19,8 @@ fn main() {
     .setup()
     .generate();
 
+    // that's not always what I expected ...?
     if different_header {
-        println!("cbindgen: same header");
+        // println!("cbindgen: same header");
     }
 }

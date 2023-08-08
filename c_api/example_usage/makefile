@@ -55,9 +55,6 @@ LDFLAGS := $(LD_LIBRARY_PATH)
 
 define default_message =
 There are a few standard rules
- - init_debug: initialize the $(target_dir) directory for a debug build
- - init_release: initialize the $(target_dir) directory for a debug build
- - init_all: initialize the $(target_dir) directory for both builds
  - build: shorthand for build_debug
  - run: shorthand for run_debug
  - build_debug: build the debug build
@@ -65,11 +62,9 @@ There are a few standard rules
  - build_release: build the release build
  - run_release: build and run the release build
  - clean_$(target_dir): remove the $(target_dir) directory
- - clean: clean up but run init_all afterwards
- - clean_full: clean everything
+ - clean: currently the same as clean_$(target_dir)
+ - clean_full: clean and remove the output directory
  - default: this message
-Before the first build, or when rebuilding after cleaning, one has to run the according
-init rule again (except for `clean`).
 The resulting executables are in $(debug_dir) and $(release_dir), respectively.
 endef
 export default_message
@@ -91,32 +86,34 @@ build_debug: $(debug)
 build_release: $(release)
 
 
-$(debug): $(debug_objs)
+$(debug): $(debug_objs) # | $(debug_dir)/ # objs ensure existence
 	$(CXX) -o $@ $^ $(LDLIBS) $(LDFLAGS)
 
 -include $(debug_deps)
 
-$(debug_build_dir)/%.o: $(src)/%.cpp
-	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CFLAGS)
+#$(debug_build_dir)/%.o: ... -> after .SECONDEXPANSION 
 
 
-$(release): $(sources) $(headers)
+$(release): $(sources) $(headers) | $(release_dir)/
 	$(CXX) -o $@ $(sources) $(CFLAGS) $(op) $(LDFLAGS) $(lto) $(LDLIBS)
 
 
-init_all: init_debug init_release
-init_debug: | $(debug_build_tree)
-init_release: | $(release_dir)/
 %/:
 	@mkdir -p $@
 
 
-clean: clean_$(target_dir) init_all
+clean: clean_$(target_dir)
 clean_full: clean_$(target_dir)
 	@rm -rf output
 clean_$(target_dir):
 	@rm -rf $(target_dir)
 
 
-.PHONY := default init_all init_debug init_release clean clean_for_real \
-					clean_$(target_dir) run build run_debug build_debug run_release build_release
+.PHONY := default clean clean_for_real clean_$(target_dir) run build run_debug \
+					build_debug run_release build_release
+
+
+.SECONDEXPANSION:
+
+$(debug_build_dir)/%.o: | $$(@D)/
+	$(CXX) -c -o $@ $(src)/$*.cpp $(CPPFLAGS) $(CFLAGS)
