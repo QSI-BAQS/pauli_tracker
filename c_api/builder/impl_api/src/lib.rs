@@ -300,6 +300,7 @@ pub fn tracker(input: TokenStream) -> TokenStream {
     let szdg = pre.name("szdg");
 
     let cx = pre.name("cx");
+    let swap = pre.name("swap");
 
     let new_qubit = pre.name("new_qubit");
 
@@ -367,12 +368,14 @@ pub fn tracker(input: TokenStream) -> TokenStream {
             <#typ as Tracker>::szdg(tracker, qubit);
         }
 
-
         #[no_mangle]
         pub extern "C-unwind" fn #cx(tracker: &mut #typ, control: usize, target: usize) {
             <#typ as Tracker>::cx(tracker, control, target);
         }
-
+        #[no_mangle]
+        pub extern "C-unwind" fn #swap(tracker: &mut #typ, control: usize, target: usize) {
+            <#typ as Tracker>::swap(tracker, control, target);
+        }
 
         #[no_mangle]
         pub extern "C-unwind" fn #new_qubit(tracker: &mut #typ, qubit: usize) {
