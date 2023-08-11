@@ -236,15 +236,16 @@ pub fn base(input: TokenStream) -> TokenStream {
         mut additional,
     } = parse_macro_input!(input as GenWithAdditional);
 
+    let tb = additional.pop().unwrap();
+
     let get = pre.name("get");
     let len = pre.name("len");
     let is_empty = pre.name("is_empty");
-    let associated_type = additional.pop().unwrap();
 
     quote! {
         #[no_mangle]
         pub extern "C-unwind" fn #get(x: &mut #typ, key: usize)
-            -> &mut #associated_type {
+            -> &mut #tb {
             <#typ as Base>::get_mut(x, key).expect("missing key")
         }
 
@@ -278,7 +279,13 @@ pub fn init(input: TokenStream) -> TokenStream {
 
 #[proc_macro]
 pub fn tracker(input: TokenStream) -> TokenStream {
-    let Gen { typ, pre } = parse_macro_input!(input as Gen);
+    let GenWithAdditional {
+        gen: Gen { typ, pre },
+        mut additional,
+    } = parse_macro_input!(input as GenWithAdditional);
+
+    let is_frames = additional.pop().unwrap();
+    let stack = additional.pop().unwrap();
 
     let track_x = pre.name("track_x");
     let track_y = pre.name("track_y");
@@ -303,6 +310,29 @@ pub fn tracker(input: TokenStream) -> TokenStream {
     let swap = pre.name("swap");
 
     let new_qubit = pre.name("new_qubit");
+    let measure = pre.name("measure");
+
+    #[allow(clippy::cmp_owned)]
+    let measure_fn = if is_frames.to_string() == "is_frames" {
+        quote! {
+            #[doc = #MUST_FREE]
+            #[no_mangle]
+            pub extern "C-unwind" fn #measure(tracker: &mut #typ, qubit: usize)
+                -> *mut #stack {
+            std::mem::ManuallyDrop::new(
+                Box::new(<#typ as Tracker>::measure(tracker, qubit).unwrap()))
+                .as_mut() as *mut #stack
+
+            }
+        }
+    } else {
+        quote! {
+            #[no_mangle]
+            pub extern "C-unwind" fn #measure(tracker: &mut #typ, qubit: usize) -> #stack {
+                <#typ as Tracker>::measure(tracker, qubit).unwrap()
+            }
+        }
+    };
 
     quote! {
         #[no_mangle]
@@ -381,6 +411,8 @@ pub fn tracker(input: TokenStream) -> TokenStream {
         pub extern "C-unwind" fn #new_qubit(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::new_qubit(tracker, qubit);
         }
+
+        #measure_fn
     }
     .into()
 }
@@ -403,7 +435,7 @@ pub fn measure_and_store(input: TokenStream) -> TokenStream {
             bit: usize,
             storage: &mut #storage,
         ) {
-            let _ = tracker.measure_and_store(bit, storage);
+            tracker.measure_and_store(bit, storage).unwrap();
         }
 
         #[no_mangle]
@@ -411,7 +443,7 @@ pub fn measure_and_store(input: TokenStream) -> TokenStream {
             tracker: &mut #typ,
             storage: &mut #storage,
         ) {
-            let _ = tracker.measure_and_store_all(storage);
+            tracker.measure_and_store_all(storage);
         }
     }
     .into()
