@@ -1,5 +1,5 @@
 # unnecessary complex for the current use case, but it will pay off later
-
+SHELL = /bin/sh
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-builtin-variables
 
@@ -20,7 +20,7 @@ sources := $(shell find $(src) -name '*.cpp')
 
 debug_build_tree := $(srcdirs:$(src)%=$(debug_build_dir)%/)
 debug_objs := $(sources:$(src)/%.cpp=$(debug_build_dir)/%.o)
-debug_deps := $(objs:.o=.d)
+debug_deps := $(debug_objs:.o=.d)
 
 
 pauli_tracker := pauli_tracker_clib
@@ -33,6 +33,7 @@ pauli_tracker_dynamic := -l$(pauli_tracker) -Wl,-rpath=$(pauli_tracker_directory
 std := -std=c++20
 err := -Wall -Wextra -pedantic
 op := -O3
+lld := -fuse-ld=lld
 lto := -flto
 deps_generation := -MMD -MP
 
@@ -77,7 +78,7 @@ release := $(release_dir)/$(name)
 
 
 run: run_debug
-build: debug
+build: build_debug
 run_debug: build_debug
 	./$(debug)
 run_release: build_release
@@ -95,7 +96,8 @@ $(debug): $(debug_objs) # | $(debug_dir)/ # objs ensure existence
 
 
 $(release): $(sources) $(headers) | $(release_dir)/
-	$(CXX) -o $@ $(sources) $(CFLAGS) $(op) $(LDFLAGS) $(lto) $(LDLIBS)
+	$(CXX) -o $@ $(sources) $(CFLAGS) $(op) $(LDFLAGS) $(LDLIBS)
+	# $(CXX) -o $@ $(sources) $(CFLAGS) $(op) $(LDFLAGS) $(lto) $(lld) $(LDLIBS)
 
 
 %/:

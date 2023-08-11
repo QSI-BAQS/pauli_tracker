@@ -13,13 +13,16 @@ $(output)/$(lib).so: $(lib_path).so
 
 $(lib_path).so: FORCE
 	(cd pauli_tracker_clib && cargo build --release)
+	# (cd pauli_tracker_clib && CARGO_PROFILE_RELEASE_LTO=true \
+	# 	RUSTFLAGS="-Clinker-plugin-lto -Clink-arg=-fuse-ld=lld" \
+	# 	cargo +stable build --release)
 
 
 $(output)/$(header): $(header_path)
 	cp $(header_path) $(output)/
 
 $(header_path): FORCE
-	(cd generate_bindings && cargo run)
+	(cd generate_bindings && cargo run --release)
 
 
 %/:
@@ -27,6 +30,8 @@ $(header_path): FORCE
 
 clean:
 	rm -rf $(output)
+	(cd pauli_tracker_clib && cargo clean)
+	(cd generate_bindings && cargo clean && rm -rf output)
 
 
 FORCE: ;
