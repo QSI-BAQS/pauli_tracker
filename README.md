@@ -22,3 +22,9 @@ Julia it can be done with the `@ccall` macro; in Python, for example, with Cytho
 ("Python objects <-> real types" might be troublesome); etc.
 
 [pauli_tracker]: https://github.com/taeruh/pauli_tracker
+
+
+## How to cite
+
+When you use the Pauli Tracker for your research please cite it (currently just by
+linking to this repo; a paper is in progress).

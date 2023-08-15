@@ -1,5 +1,5 @@
 # unnecessary complex for the current use case, but it will pay off later
-SHELL = /bin/sh
+SHELL := /bin/sh
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-builtin-variables
 
@@ -13,12 +13,10 @@ release_dir := $(target_dir)/release
 debug_build_dir := $(debug_dir)/build
 release_build_dir := $(release_dir)/build
 
-srcdirs := $(shell find $(src) -type d)
 sources := $(shell find $(src) -name '*.cpp')
 # headers := $(shell find $(include_dir) -name '*.hpp')
 # private_headers := $(shell find $(include_private_dir) -name '*.hpp')
 
-debug_build_tree := $(srcdirs:$(src)%=$(debug_build_dir)%/)
 debug_objs := $(sources:$(src)/%.cpp=$(debug_build_dir)/%.o)
 debug_deps := $(debug_objs:.o=.d)
 
