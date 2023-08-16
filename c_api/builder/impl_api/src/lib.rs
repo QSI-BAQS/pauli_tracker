@@ -309,6 +309,11 @@ pub fn tracker(input: TokenStream) -> TokenStream {
     let cx = pre.name("cx");
     let swap = pre.name("swap");
 
+    let move_x_to_x = pre.name("move_x_to_x");
+    let move_x_to_z = pre.name("move_x_to_z");
+    let move_z_to_x = pre.name("move_z_to_x");
+    let move_z_to_z = pre.name("move_z_to_z");
+
     let new_qubit = pre.name("new_qubit");
     let measure = pre.name("measure");
 
@@ -328,7 +333,8 @@ pub fn tracker(input: TokenStream) -> TokenStream {
     } else {
         quote! {
             #[no_mangle]
-            pub extern "C-unwind" fn #measure(tracker: &mut #typ, qubit: usize) -> #stack {
+            pub extern "C-unwind"
+            fn #measure(tracker: &mut #typ, qubit: usize) -> #stack {
                 <#typ as Tracker>::measure(tracker, qubit).unwrap()
             }
         }
@@ -359,7 +365,8 @@ pub fn tracker(input: TokenStream) -> TokenStream {
             <#typ as Tracker>::s(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+        pub extern "C-unwind"
+        fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
             <#typ as Tracker>::cz(tracker, qubit_a, qubit_b);
         }
 
@@ -399,13 +406,37 @@ pub fn tracker(input: TokenStream) -> TokenStream {
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #cx(tracker: &mut #typ, control: usize, target: usize) {
+        pub extern "C-unwind"
+        fn #cx(tracker: &mut #typ, control: usize, target: usize) {
             <#typ as Tracker>::cx(tracker, control, target);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #swap(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+        pub extern "C-unwind"
+        fn #swap(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
             <#typ as Tracker>::swap(tracker, qubit_b, qubit_a);
         }
+
+        #[no_mangle]
+        pub extern "C-unwind"
+        fn #move_x_to_x(tracker: &mut #typ, source: usize, destination: usize) {
+            <#typ as Tracker>::move_x_to_x(tracker, source, destination);
+        }
+        #[no_mangle]
+        pub extern "C-unwind"
+        fn #move_x_to_z(tracker: &mut #typ, source: usize, destination: usize) {
+            <#typ as Tracker>::move_x_to_z(tracker, source, destination);
+        }
+        #[no_mangle]
+        pub extern "C-unwind"
+        fn #move_z_to_x(tracker: &mut #typ, source: usize, destination: usize) {
+            <#typ as Tracker>::move_z_to_x(tracker, source, destination);
+        }
+        #[no_mangle]
+        pub extern "C-unwind"
+        fn #move_z_to_z(tracker: &mut #typ, source: usize, destination: usize) {
+            <#typ as Tracker>::move_z_to_z(tracker, source, destination);
+        }
+
 
         #[no_mangle]
         pub extern "C-unwind" fn #new_qubit(tracker: &mut #typ, qubit: usize) {

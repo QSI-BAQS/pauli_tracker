@@ -39,6 +39,8 @@ macro_rules! boilerplate {
     )*};
 }
 
+// actually, one should also include the storage abbreviation in the name, but since we
+// always use Map_* as storage, I'm omitting it here (for now)
 boilerplate!(
     (Frames_hmpsvbfx, frames_hmpsvbfx_, Map_psvbfx, PauliStack_vb),
     (Frames_hmpsbvfx, frames_hmpsbvfx_, Map_psbvfx, PauliStack_bv),
