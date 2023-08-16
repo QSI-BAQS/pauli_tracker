@@ -21,8 +21,8 @@ int main(void) {
 
   frames_hmpsvbfx_measure_and_store(frames, 1, storage);
   printf("%d\n", live_hmpefx_measure(live, 1));
-  printf("(%d, %d)\n", live_bvpt_measure(tuple_live, 1)._0,
-         live_bvpt_measure(tuple_live, 1)._1);
+  PauliTuple tuple_result = live_bvpt_measure(tuple_live, 1);
+  printf("(%d, %d)\n", tuple_result._0, tuple_result._1);
 
   frames_hmpsvbfx_track_y(frames, 2);
   live_hmpefx_track_y(live, 2);

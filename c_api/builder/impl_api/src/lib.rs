@@ -403,8 +403,8 @@ pub fn tracker(input: TokenStream) -> TokenStream {
             <#typ as Tracker>::cx(tracker, control, target);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #swap(tracker: &mut #typ, control: usize, target: usize) {
-            <#typ as Tracker>::swap(tracker, control, target);
+        pub extern "C-unwind" fn #swap(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+            <#typ as Tracker>::swap(tracker, qubit_b, qubit_a);
         }
 
         #[no_mangle]
