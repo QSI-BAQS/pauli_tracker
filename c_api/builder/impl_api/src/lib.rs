@@ -79,7 +79,7 @@ pub fn raw_vec(input: TokenStream) -> TokenStream {
     let ret = additional.pop().unwrap();
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #get_raw(x: &mut #typ) -> #ret {
+        pub extern "C" fn #get_raw(x: &mut #typ) -> #ret {
             #ret {
                 data: x.as_mut_ptr(),
                 len: x.len(),
@@ -99,7 +99,7 @@ pub fn raw_vec_newtyped(input: TokenStream) -> TokenStream {
     let ret = additional.pop().unwrap();
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #get_raw(x: &mut #typ) -> #ret {
+        pub extern "C" fn #get_raw(x: &mut #typ) -> #ret {
             #ret {
                 data: x.0.as_mut_ptr(),
                 len: x.0.len(),
@@ -121,19 +121,19 @@ pub fn basic(input: TokenStream) -> TokenStream {
     quote! {
         #[doc = #MUST_FREE]
         #[no_mangle]
-        pub extern "C-unwind" fn #new() -> *mut #typ {
+        pub extern "C" fn #new() -> *mut #typ {
             std::mem::ManuallyDrop::new(Box::new(#typ::default())).as_mut() as *mut #typ
         }
 
         #[doc = #FREES]
         #[no_mangle]
-        pub unsafe extern "C-unwind" fn #free(x: *mut #typ) {
+        pub unsafe extern "C" fn #free(x: *mut #typ) {
             unsafe { Box::from_raw(x) };
         }
 
         /// Serialize into json.
         #[no_mangle]
-        pub unsafe extern "C-unwind"
+        pub unsafe extern "C"
         fn #serialize(x: &#typ, file: *const std::ffi::c_char) {
             let file = unsafe {
                 std::ffi::CStr::from_ptr(file as *const i8)
@@ -146,7 +146,7 @@ pub fn basic(input: TokenStream) -> TokenStream {
         ///
         #[doc = #MUST_FREE]
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #deserialize(file: *const std::ffi::c_char) -> *mut #typ {
             let file = unsafe {
                 std::ffi::CStr::from_ptr(file as *const i8)
@@ -165,7 +165,7 @@ pub fn pauli(input: TokenStream) -> TokenStream {
     let tableau_encoding = pre.name("tableau_encoding");
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #tableau_encoding(x: &mut #typ) -> u8 {
+        pub extern "C" fn #tableau_encoding(x: &mut #typ) -> u8 {
             <#typ as Pauli>::tableau_encoding(x)
         }
     }
@@ -185,13 +185,13 @@ pub fn pauli_stack(input: TokenStream) -> TokenStream {
 
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #left(x: &mut #typ) -> *mut #inner_type
+        pub extern "C" fn #left(x: &mut #typ) -> *mut #inner_type
         {
             &mut x.left as *mut #inner_type
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #right(x: &mut #typ) -> *mut #inner_type
+        pub extern "C" fn #right(x: &mut #typ) -> *mut #inner_type
         {
             &mut x.right as *mut #inner_type
         }
@@ -209,18 +209,18 @@ pub fn boolean_vector(input: TokenStream) -> TokenStream {
 
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #get(x: &mut #typ, key: usize)
+        pub extern "C" fn #get(x: &mut #typ, key: usize)
             -> bool {
             <#typ as BooleanVector>::get(x, key).expect("missing key")
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #len(x: &#typ) -> usize {
+        pub extern "C" fn #len(x: &#typ) -> usize {
             <#typ as BooleanVector>::len(x)
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #is_empty(x: &#typ) -> bool {
+        pub extern "C" fn #is_empty(x: &#typ) -> bool {
             <#typ as BooleanVector>::is_empty(x)
         }
     }
@@ -244,18 +244,18 @@ pub fn base(input: TokenStream) -> TokenStream {
 
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #get(x: &mut #typ, key: usize)
+        pub extern "C" fn #get(x: &mut #typ, key: usize)
             -> &mut #tb {
             <#typ as Base>::get_mut(x, key).expect("missing key")
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #len(x: &#typ) -> usize {
+        pub extern "C" fn #len(x: &#typ) -> usize {
             <#typ as Base>::len(x)
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #is_empty(x: &#typ) -> bool {
+        pub extern "C" fn #is_empty(x: &#typ) -> bool {
             <#typ as Base>::is_empty(x)
         }
     }
@@ -269,7 +269,7 @@ pub fn init(input: TokenStream) -> TokenStream {
     quote! {
         #[doc = #MUST_FREE]
         #[no_mangle]
-        pub extern "C-unwind" fn #init(num_qubits: usize) -> *mut #typ {
+        pub extern "C" fn #init(num_qubits: usize) -> *mut #typ {
             std::mem::ManuallyDrop::new(Box::new(<#typ as Init>::init(num_qubits)))
                 .as_mut() as *mut #typ
         }
@@ -322,7 +322,7 @@ pub fn tracker(input: TokenStream) -> TokenStream {
         quote! {
             #[doc = #MUST_FREE]
             #[no_mangle]
-            pub extern "C-unwind" fn #measure(tracker: &mut #typ, qubit: usize)
+            pub extern "C" fn #measure(tracker: &mut #typ, qubit: usize)
                 -> *mut #stack {
             std::mem::ManuallyDrop::new(
                 Box::new(<#typ as Tracker>::measure(tracker, qubit).unwrap()))
@@ -333,7 +333,7 @@ pub fn tracker(input: TokenStream) -> TokenStream {
     } else {
         quote! {
             #[no_mangle]
-            pub extern "C-unwind"
+            pub extern "C"
             fn #measure(tracker: &mut #typ, qubit: usize) -> #stack {
                 <#typ as Tracker>::measure(tracker, qubit).unwrap()
             }
@@ -342,104 +342,104 @@ pub fn tracker(input: TokenStream) -> TokenStream {
 
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #track_x(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #track_x(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::track_x(tracker, qubit);
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #track_y(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #track_y(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::track_y(tracker, qubit);
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #track_z(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #track_z(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::track_z(tracker, qubit);
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #h(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #h(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::h(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #s(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #s(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::s(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
             <#typ as Tracker>::cz(tracker, qubit_a, qubit_b);
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #x(_: &mut #typ, _: usize) {}
+        pub extern "C" fn #x(_: &mut #typ, _: usize) {}
         #[no_mangle]
-        pub extern "C-unwind" fn #y(_: &mut #typ, _: usize) {}
+        pub extern "C" fn #y(_: &mut #typ, _: usize) {}
         #[no_mangle]
-        pub extern "C-unwind" fn #z(_: &mut #typ, _: usize) {}
+        pub extern "C" fn #z(_: &mut #typ, _: usize) {}
         #[no_mangle]
-        pub extern "C-unwind" fn #sdg(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #sdg(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::sdg(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #sx(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #sx(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::sx(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #sxdg(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #sxdg(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::sxdg(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #sy(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #sy(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::sy(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #sydg(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #sydg(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::sydg(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #sz(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #sz(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::sz(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C-unwind" fn #szdg(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #szdg(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::szdg(tracker, qubit);
         }
 
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #cx(tracker: &mut #typ, control: usize, target: usize) {
             <#typ as Tracker>::cx(tracker, control, target);
         }
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #swap(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
             <#typ as Tracker>::swap(tracker, qubit_b, qubit_a);
         }
 
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #move_x_to_x(tracker: &mut #typ, source: usize, destination: usize) {
             <#typ as Tracker>::move_x_to_x(tracker, source, destination);
         }
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #move_x_to_z(tracker: &mut #typ, source: usize, destination: usize) {
             <#typ as Tracker>::move_x_to_z(tracker, source, destination);
         }
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #move_z_to_x(tracker: &mut #typ, source: usize, destination: usize) {
             <#typ as Tracker>::move_z_to_x(tracker, source, destination);
         }
         #[no_mangle]
-        pub extern "C-unwind"
+        pub extern "C"
         fn #move_z_to_z(tracker: &mut #typ, source: usize, destination: usize) {
             <#typ as Tracker>::move_z_to_z(tracker, source, destination);
         }
 
 
         #[no_mangle]
-        pub extern "C-unwind" fn #new_qubit(tracker: &mut #typ, qubit: usize) {
+        pub extern "C" fn #new_qubit(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::new_qubit(tracker, qubit);
         }
 
@@ -461,7 +461,7 @@ pub fn measure_and_store(input: TokenStream) -> TokenStream {
 
     quote! {
         #[no_mangle]
-        pub extern "C-unwind" fn #measure_and_store(
+        pub extern "C" fn #measure_and_store(
             tracker: &mut #typ,
             bit: usize,
             storage: &mut #storage,
@@ -470,7 +470,7 @@ pub fn measure_and_store(input: TokenStream) -> TokenStream {
         }
 
         #[no_mangle]
-        pub extern "C-unwind" fn #measure_and_store_all(
+        pub extern "C" fn #measure_and_store_all(
             tracker: &mut #typ,
             storage: &mut #storage,
         ) {
