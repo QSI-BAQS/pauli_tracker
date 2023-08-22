@@ -4,15 +4,15 @@ The relevant code is in the [c_api](../c_api) directory.
 
 ## Compiling the library
 
-Run `make` (or do what the makefile does if not on Linux) to generate a static and a
-dynamic library as well as the corresponding header file. The files are located in
-`output`.
+The header file is `pauli_tracker.h`. Run `make library` (or do what the makefile does)
+to generate a static and a dynamic library (`make header` to rebuild the header). The
+files are located in `output`.
 
 Read the top level documentation of [pauli_tracker_clib]
 (create it with `cargo doc --open` in the directory)!
 
-**Note**: The compilation of the libraries requires a fairly new Rust version (>= 1.71)
-and the generation of the header file requires that a nightly toolchain is installed.
+**Note**: The generation of the header file requires that a nightly toolchain is
+installed.
 
 The provided API does not represent the full API of [pauli_tracker], it's only a small
 subset of it. Some things that should probably be in it, may be randomly missing. Feel
