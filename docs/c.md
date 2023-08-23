@@ -8,6 +8,15 @@ The header file is `pauli_tracker.h`. Run `make library` (or do what the makefil
 to generate a static and a dynamic library (`make header` to rebuild the header). The
 files are located in `output`.
 
+There's also a Dockerfile to build the library for **linux**:
+```bash
+docker build --network=host -t pauli .
+docker create --name pauli pauli:latest
+docker cp pauli:/home/docker/output/ .
+```
+*If you ran the commands as root, you may want to change the file permissions of the
+copied files.*
+
 Read the top level documentation of [pauli_tracker_clib]
 (create it with `cargo doc --open` in the directory)!
 
