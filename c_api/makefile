@@ -25,7 +25,7 @@ library: $(output)/$(lib).so
 header: $(output)/$(header)
 
 
-$(output)/$(lib).so: $(output)/ | $(lib_path).so
+$(output)/$(lib).so: $(lib_path).so | $(output)/
 	cp $(libs) $(output)/
 
 $(lib_path).so: FORCE
@@ -35,7 +35,7 @@ $(lib_path).so: FORCE
 	# 	cargo +stable build --release)
 
 
-$(output)/$(header): $(output)/ | $(header_path)
+$(output)/$(header): $(header_path) |  $(output)/
 	cp $(header_path) $(output)/
 
 $(header_path): FORCE
