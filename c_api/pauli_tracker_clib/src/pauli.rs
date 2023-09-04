@@ -16,6 +16,9 @@ use crate::boolean_vector::{
     Vec_b,
 };
 
+impl_api::pauli!(PauliEnum, pauli_enum_);
+impl_api::pauli!(PauliTuple, pauli_tuple_);
+
 pub type PauliStack_vb = PauliStack<Vec_b>;
 pub type PauliStack_bv = PauliStack<BitVec>;
 
@@ -25,9 +28,6 @@ macro_rules! boilerplate_stack {
         impl_api::pauli_stack!($typ, $pre, $stack);
     )*};
 }
-
-impl_api::pauli!(PauliEnum, pauli_enum_);
-impl_api::pauli!(PauliTuple, pauli_tuple_);
 
 boilerplate_stack! {
     (PauliStack_vb, pauli_stack_vb_, Vec_b),

@@ -241,6 +241,8 @@ typedef struct MappedVector_PauliTuple__BuildHasherDefault_FxHasher MappedVector
  * Instead of having a vector over [Pauli]s, we separate the X and Z parts into two
  * vectors (cf. [Pauli] for encoding). This enables us to efficiently perform
  * (Clifford) operations on those [PauliStack]s.
+ *
+ * Note that the fields are public and the methods are mainly convenience methods.
  */
 typedef struct PauliStack_BitVec PauliStack_BitVec;
 
@@ -250,8 +252,14 @@ typedef struct PauliStack_BitVec PauliStack_BitVec;
  * Instead of having a vector over [Pauli]s, we separate the X and Z parts into two
  * vectors (cf. [Pauli] for encoding). This enables us to efficiently perform
  * (Clifford) operations on those [PauliStack]s.
+ *
+ * Note that the fields are public and the methods are mainly convenience methods.
  */
 typedef struct PauliStack_Vec_b PauliStack_Vec_b;
+
+typedef struct Vec_PauliStack_bv Vec_PauliStack_bv;
+
+typedef struct Vec_PauliStack_vb Vec_PauliStack_vb;
 
 typedef struct Vec_bool Vec_bool;
 
@@ -438,6 +446,10 @@ typedef struct Frames_MappedVector_psvbfx Frames_mvpsvbfx;
 
 typedef struct Frames_MappedVector_psbvfx Frames_mvpsbvfx;
 
+typedef struct Vec_PauliStack_vb Vec_psvb;
+
+typedef struct Vec_PauliStack_bv Vec_psbv;
+
 typedef struct Live_Map_pefx Live_hmpefx;
 
 typedef struct Live_BufferedVector_pe Live_bvpe;
@@ -449,12 +461,12 @@ extern "C" {
 #endif // __cplusplus
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Vec_b *vec_b_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void vec_b_free(Vec_b *x);
 
@@ -466,7 +478,7 @@ void vec_b_serialize(const Vec_b *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Vec_b *vec_b_deserialize(const char *file);
 
@@ -476,13 +488,15 @@ uintptr_t vec_b_len(const Vec_b *x);
 
 bool vec_b_is_empty(const Vec_b *x);
 
+void vec_b_resize(Vec_b *x, uintptr_t len, bool flag);
+
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 struct BitVec *bitvec_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void bitvec_free(struct BitVec *x);
 
@@ -494,7 +508,7 @@ void bitvec_serialize(const struct BitVec *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 struct BitVec *bitvec_deserialize(const char *file);
 
@@ -504,6 +518,8 @@ uintptr_t bitvec_len(const struct BitVec *x);
 
 bool bitvec_is_empty(const struct BitVec *x);
 
+void bitvec_resize(struct BitVec *x, uintptr_t len, bool flag);
+
 RawVec_b vec_b_get_raw(Vec_b *x);
 
 /**
@@ -512,12 +528,12 @@ RawVec_b vec_b_get_raw(Vec_b *x);
 RawVec_us bitvec_get_raw(struct BitVec *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_psvbfx *map_psvbfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void map_psvbfx_free(Map_psvbfx *x);
 
@@ -529,12 +545,12 @@ void map_psvbfx_serialize(const Map_psvbfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_psvbfx *map_psvbfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_psvbfx *map_psvbfx_init(uintptr_t num_qubits);
 
@@ -545,12 +561,12 @@ uintptr_t map_psvbfx_len(const Map_psvbfx *x);
 bool map_psvbfx_is_empty(const Map_psvbfx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_psbvfx *map_psbvfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void map_psbvfx_free(Map_psbvfx *x);
 
@@ -562,12 +578,12 @@ void map_psbvfx_serialize(const Map_psbvfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_psbvfx *map_psbvfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_psbvfx *map_psbvfx_init(uintptr_t num_qubits);
 
@@ -578,12 +594,12 @@ uintptr_t map_psbvfx_len(const Map_psbvfx *x);
 bool map_psbvfx_is_empty(const Map_psbvfx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_pefx *map_pefx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void map_pefx_free(Map_pefx *x);
 
@@ -595,12 +611,12 @@ void map_pefx_serialize(const Map_pefx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_pefx *map_pefx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_pefx *map_pefx_init(uintptr_t num_qubits);
 
@@ -611,12 +627,12 @@ uintptr_t map_pefx_len(const Map_pefx *x);
 bool map_pefx_is_empty(const Map_pefx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_ptfx *map_ptfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void map_ptfx_free(Map_ptfx *x);
 
@@ -628,12 +644,12 @@ void map_ptfx_serialize(const Map_ptfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_ptfx *map_ptfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Map_ptfx *map_ptfx_init(uintptr_t num_qubits);
 
@@ -644,12 +660,12 @@ uintptr_t map_ptfx_len(const Map_ptfx *x);
 bool map_ptfx_is_empty(const Map_ptfx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_psvbfx *mapped_vector_psvbfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void mapped_vector_psvbfx_free(MappedVector_psvbfx *x);
 
@@ -661,12 +677,12 @@ void mapped_vector_psvbfx_serialize(const MappedVector_psvbfx *x, const char *fi
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_psvbfx *mapped_vector_psvbfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_psvbfx *mapped_vector_psvbfx_init(uintptr_t num_qubits);
 
@@ -677,12 +693,12 @@ uintptr_t mapped_vector_psvbfx_len(const MappedVector_psvbfx *x);
 bool mapped_vector_psvbfx_is_empty(const MappedVector_psvbfx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_psbvfx *mapped_vector_psbvfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void mapped_vector_psbvfx_free(MappedVector_psbvfx *x);
 
@@ -694,12 +710,12 @@ void mapped_vector_psbvfx_serialize(const MappedVector_psbvfx *x, const char *fi
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_psbvfx *mapped_vector_psbvfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_psbvfx *mapped_vector_psbvfx_init(uintptr_t num_qubits);
 
@@ -710,12 +726,12 @@ uintptr_t mapped_vector_psbvfx_len(const MappedVector_psbvfx *x);
 bool mapped_vector_psbvfx_is_empty(const MappedVector_psbvfx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_pefx *mapped_vector_pefx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void mapped_vector_pefx_free(MappedVector_pefx *x);
 
@@ -727,12 +743,12 @@ void mapped_vector_pefx_serialize(const MappedVector_pefx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_pefx *mapped_vector_pefx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_pefx *mapped_vector_pefx_init(uintptr_t num_qubits);
 
@@ -743,12 +759,12 @@ uintptr_t mapped_vector_pefx_len(const MappedVector_pefx *x);
 bool mapped_vector_pefx_is_empty(const MappedVector_pefx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_ptfx *mapped_vector_ptfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void mapped_vector_ptfx_free(MappedVector_ptfx *x);
 
@@ -760,12 +776,12 @@ void mapped_vector_ptfx_serialize(const MappedVector_ptfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_ptfx *mapped_vector_ptfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 MappedVector_ptfx *mapped_vector_ptfx_init(uintptr_t num_qubits);
 
@@ -776,12 +792,12 @@ uintptr_t mapped_vector_ptfx_len(const MappedVector_ptfx *x);
 bool mapped_vector_ptfx_is_empty(const MappedVector_ptfx *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_psvb *buffered_vector_psvb_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void buffered_vector_psvb_free(BufferedVector_psvb *x);
 
@@ -793,12 +809,12 @@ void buffered_vector_psvb_serialize(const BufferedVector_psvb *x, const char *fi
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_psvb *buffered_vector_psvb_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_psvb *buffered_vector_psvb_init(uintptr_t num_qubits);
 
@@ -809,12 +825,12 @@ uintptr_t buffered_vector_psvb_len(const BufferedVector_psvb *x);
 bool buffered_vector_psvb_is_empty(const BufferedVector_psvb *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_psbv *buffered_vector_psbv_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void buffered_vector_psbv_free(BufferedVector_psbv *x);
 
@@ -826,12 +842,12 @@ void buffered_vector_psbv_serialize(const BufferedVector_psbv *x, const char *fi
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_psbv *buffered_vector_psbv_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_psbv *buffered_vector_psbv_init(uintptr_t num_qubits);
 
@@ -842,12 +858,12 @@ uintptr_t buffered_vector_psbv_len(const BufferedVector_psbv *x);
 bool buffered_vector_psbv_is_empty(const BufferedVector_psbv *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_pe *buffered_vector_pe_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void buffered_vector_pe_free(BufferedVector_pe *x);
 
@@ -859,12 +875,12 @@ void buffered_vector_pe_serialize(const BufferedVector_pe *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_pe *buffered_vector_pe_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_pe *buffered_vector_pe_init(uintptr_t num_qubits);
 
@@ -875,12 +891,12 @@ uintptr_t buffered_vector_pe_len(const BufferedVector_pe *x);
 bool buffered_vector_pe_is_empty(const BufferedVector_pe *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_pt *buffered_vector_pt_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void buffered_vector_pt_free(BufferedVector_pt *x);
 
@@ -892,12 +908,12 @@ void buffered_vector_pt_serialize(const BufferedVector_pt *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_pt *buffered_vector_pt_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 BufferedVector_pt *buffered_vector_pt_init(uintptr_t num_qubits);
 
@@ -920,12 +936,12 @@ uint8_t pauli_enum_tableau_encoding(PauliEnum *x);
 uint8_t pauli_tuple_tableau_encoding(struct PauliTuple *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 PauliStack_vb *pauli_stack_vb_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void pauli_stack_vb_free(PauliStack_vb *x);
 
@@ -937,7 +953,7 @@ void pauli_stack_vb_serialize(const PauliStack_vb *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 PauliStack_vb *pauli_stack_vb_deserialize(const char *file);
 
@@ -946,12 +962,12 @@ Vec_b *pauli_stack_vb_left(PauliStack_vb *x);
 Vec_b *pauli_stack_vb_right(PauliStack_vb *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 PauliStack_bv *pauli_stack_bv_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void pauli_stack_bv_free(PauliStack_bv *x);
 
@@ -963,7 +979,7 @@ void pauli_stack_bv_serialize(const PauliStack_bv *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 PauliStack_bv *pauli_stack_bv_deserialize(const char *file);
 
@@ -972,12 +988,12 @@ struct BitVec *pauli_stack_bv_left(PauliStack_bv *x);
 struct BitVec *pauli_stack_bv_right(PauliStack_bv *x);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_hmpsvbfx *frames_hmpsvbfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void frames_hmpsvbfx_free(Frames_hmpsvbfx *x);
 
@@ -989,12 +1005,12 @@ void frames_hmpsvbfx_serialize(const Frames_hmpsvbfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_hmpsvbfx *frames_hmpsvbfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_hmpsvbfx *frames_hmpsvbfx_init(uintptr_t num_qubits);
 
@@ -1045,23 +1061,42 @@ void frames_hmpsvbfx_move_z_to_z(Frames_hmpsvbfx *tracker, uintptr_t source, uin
 void frames_hmpsvbfx_new_qubit(Frames_hmpsvbfx *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-PauliStack_vb *frames_hmpsvbfx_measure(Frames_hmpsvbfx *tracker, uintptr_t qubit);
-
-void frames_hmpsvbfx_measure_and_store(Frames_hmpsvbfx *tracker,
-                                       uintptr_t bit,
-                                       Map_psvbfx *storage);
-
-void frames_hmpsvbfx_measure_and_store_all(Frames_hmpsvbfx *tracker, Map_psvbfx *storage);
+PauliStack_vb *frames_hmpsvbfx_measure(Frames_hmpsvbfx *tracker,
+                                       uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+struct Vec_PauliStack_vb *frames_hmpsvbfx_transpose_reverted(Frames_hmpsvbfx *frames,
+                                                             uintptr_t num_frames);
+
+uintptr_t frames_hmpsvbfx_frames_num(Frames_hmpsvbfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Map_psvbfx *frames_hmpsvbfx_into_storage(Frames_hmpsvbfx *frames);
+
+const Map_psvbfx *frames_hmpsvbfx_as_storage(Frames_hmpsvbfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_hmpsvbfx *frames_hmpsvbfx_new_unchecked(Map_psvbfx *storage,
+                                               uintptr_t num_frames);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_hmpsbvfx *frames_hmpsbvfx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void frames_hmpsbvfx_free(Frames_hmpsbvfx *x);
 
@@ -1073,12 +1108,12 @@ void frames_hmpsbvfx_serialize(const Frames_hmpsbvfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_hmpsbvfx *frames_hmpsbvfx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_hmpsbvfx *frames_hmpsbvfx_init(uintptr_t num_qubits);
 
@@ -1129,23 +1164,42 @@ void frames_hmpsbvfx_move_z_to_z(Frames_hmpsbvfx *tracker, uintptr_t source, uin
 void frames_hmpsbvfx_new_qubit(Frames_hmpsbvfx *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-PauliStack_bv *frames_hmpsbvfx_measure(Frames_hmpsbvfx *tracker, uintptr_t qubit);
-
-void frames_hmpsbvfx_measure_and_store(Frames_hmpsbvfx *tracker,
-                                       uintptr_t bit,
-                                       Map_psbvfx *storage);
-
-void frames_hmpsbvfx_measure_and_store_all(Frames_hmpsbvfx *tracker, Map_psbvfx *storage);
+PauliStack_bv *frames_hmpsbvfx_measure(Frames_hmpsbvfx *tracker,
+                                       uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+struct Vec_PauliStack_bv *frames_hmpsbvfx_transpose_reverted(Frames_hmpsbvfx *frames,
+                                                             uintptr_t num_frames);
+
+uintptr_t frames_hmpsbvfx_frames_num(Frames_hmpsbvfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Map_psbvfx *frames_hmpsbvfx_into_storage(Frames_hmpsbvfx *frames);
+
+const Map_psbvfx *frames_hmpsbvfx_as_storage(Frames_hmpsbvfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_hmpsbvfx *frames_hmpsbvfx_new_unchecked(Map_psbvfx *storage,
+                                               uintptr_t num_frames);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_bvpsvb *frames_bvpsvb_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void frames_bvpsvb_free(Frames_bvpsvb *x);
 
@@ -1157,12 +1211,12 @@ void frames_bvpsvb_serialize(const Frames_bvpsvb *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_bvpsvb *frames_bvpsvb_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_bvpsvb *frames_bvpsvb_init(uintptr_t num_qubits);
 
@@ -1213,21 +1267,42 @@ void frames_bvpsvb_move_z_to_z(Frames_bvpsvb *tracker, uintptr_t source, uintptr
 void frames_bvpsvb_new_qubit(Frames_bvpsvb *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-PauliStack_vb *frames_bvpsvb_measure(Frames_bvpsvb *tracker, uintptr_t qubit);
-
-void frames_bvpsvb_measure_and_store(Frames_bvpsvb *tracker, uintptr_t bit, Map_psvbfx *storage);
-
-void frames_bvpsvb_measure_and_store_all(Frames_bvpsvb *tracker, Map_psvbfx *storage);
+PauliStack_vb *frames_bvpsvb_measure(Frames_bvpsvb *tracker,
+                                     uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+struct Vec_PauliStack_vb *frames_bvpsvb_transpose_reverted(Frames_bvpsvb *frames,
+                                                           uintptr_t num_frames);
+
+uintptr_t frames_bvpsvb_frames_num(Frames_bvpsvb *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+BufferedVector_psvb *frames_bvpsvb_into_storage(Frames_bvpsvb *frames);
+
+const BufferedVector_psvb *frames_bvpsvb_as_storage(Frames_bvpsvb *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_bvpsvb *frames_bvpsvb_new_unchecked(BufferedVector_psvb *storage,
+                                           uintptr_t num_frames);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_bvpsbv *frames_bvpsbv_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void frames_bvpsbv_free(Frames_bvpsbv *x);
 
@@ -1239,12 +1314,12 @@ void frames_bvpsbv_serialize(const Frames_bvpsbv *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_bvpsbv *frames_bvpsbv_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_bvpsbv *frames_bvpsbv_init(uintptr_t num_qubits);
 
@@ -1295,21 +1370,42 @@ void frames_bvpsbv_move_z_to_z(Frames_bvpsbv *tracker, uintptr_t source, uintptr
 void frames_bvpsbv_new_qubit(Frames_bvpsbv *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-PauliStack_bv *frames_bvpsbv_measure(Frames_bvpsbv *tracker, uintptr_t qubit);
-
-void frames_bvpsbv_measure_and_store(Frames_bvpsbv *tracker, uintptr_t bit, Map_psbvfx *storage);
-
-void frames_bvpsbv_measure_and_store_all(Frames_bvpsbv *tracker, Map_psbvfx *storage);
+PauliStack_bv *frames_bvpsbv_measure(Frames_bvpsbv *tracker,
+                                     uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+struct Vec_PauliStack_bv *frames_bvpsbv_transpose_reverted(Frames_bvpsbv *frames,
+                                                           uintptr_t num_frames);
+
+uintptr_t frames_bvpsbv_frames_num(Frames_bvpsbv *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+BufferedVector_psbv *frames_bvpsbv_into_storage(Frames_bvpsbv *frames);
+
+const BufferedVector_psbv *frames_bvpsbv_as_storage(Frames_bvpsbv *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_bvpsbv *frames_bvpsbv_new_unchecked(BufferedVector_psbv *storage,
+                                           uintptr_t num_frames);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_mvpsvbfx *frames_mvpsvb_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void frames_mvpsvb_free(Frames_mvpsvbfx *x);
 
@@ -1321,12 +1417,12 @@ void frames_mvpsvb_serialize(const Frames_mvpsvbfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_mvpsvbfx *frames_mvpsvb_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_mvpsvbfx *frames_mvpsvb_init(uintptr_t num_qubits);
 
@@ -1377,23 +1473,42 @@ void frames_mvpsvb_move_z_to_z(Frames_mvpsvbfx *tracker, uintptr_t source, uintp
 void frames_mvpsvb_new_qubit(Frames_mvpsvbfx *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-PauliStack_vb *frames_mvpsvb_measure(Frames_mvpsvbfx *tracker, uintptr_t qubit);
-
-void frames_mvpsvb_measure_and_store(Frames_mvpsvbfx *tracker,
-                                     uintptr_t bit,
-                                     MappedVector_psvbfx *storage);
-
-void frames_mvpsvb_measure_and_store_all(Frames_mvpsvbfx *tracker, MappedVector_psvbfx *storage);
+PauliStack_vb *frames_mvpsvb_measure(Frames_mvpsvbfx *tracker,
+                                     uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+struct Vec_PauliStack_vb *frames_mvpsvb_transpose_reverted(Frames_mvpsvbfx *frames,
+                                                           uintptr_t num_frames);
+
+uintptr_t frames_mvpsvb_frames_num(Frames_mvpsvbfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+MappedVector_psvbfx *frames_mvpsvb_into_storage(Frames_mvpsvbfx *frames);
+
+const MappedVector_psvbfx *frames_mvpsvb_as_storage(Frames_mvpsvbfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_mvpsvbfx *frames_mvpsvb_new_unchecked(MappedVector_psvbfx *storage,
+                                             uintptr_t num_frames);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_mvpsbvfx *frames_mvpsbv_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void frames_mvpsbv_free(Frames_mvpsbvfx *x);
 
@@ -1405,12 +1520,12 @@ void frames_mvpsbv_serialize(const Frames_mvpsbvfx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_mvpsbvfx *frames_mvpsbv_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_mvpsbvfx *frames_mvpsbv_init(uintptr_t num_qubits);
 
@@ -1461,23 +1576,204 @@ void frames_mvpsbv_move_z_to_z(Frames_mvpsbvfx *tracker, uintptr_t source, uintp
 void frames_mvpsbv_new_qubit(Frames_mvpsbvfx *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-PauliStack_bv *frames_mvpsbv_measure(Frames_mvpsbvfx *tracker, uintptr_t qubit);
-
-void frames_mvpsbv_measure_and_store(Frames_mvpsbvfx *tracker,
-                                     uintptr_t bit,
-                                     MappedVector_psbvfx *storage);
-
-void frames_mvpsbv_measure_and_store_all(Frames_mvpsbvfx *tracker, MappedVector_psbvfx *storage);
+PauliStack_bv *frames_mvpsbv_measure(Frames_mvpsbvfx *tracker,
+                                     uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+struct Vec_PauliStack_bv *frames_mvpsbv_transpose_reverted(Frames_mvpsbvfx *frames,
+                                                           uintptr_t num_frames);
+
+uintptr_t frames_mvpsbv_frames_num(Frames_mvpsbvfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+MappedVector_psbvfx *frames_mvpsbv_into_storage(Frames_mvpsbvfx *frames);
+
+const MappedVector_psbvfx *frames_mvpsbv_as_storage(Frames_mvpsbvfx *frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_mvpsbvfx *frames_mvpsbv_new_unchecked(MappedVector_psbvfx *storage,
+                                             uintptr_t num_frames);
+
+void frames_hmpsvbfx_measure_and_store_hmfx(Frames_hmpsvbfx *frames,
+                                            uintptr_t bit,
+                                            Map_psvbfx *storage);
+
+void frames_hmpsvbfx_measure_and_store_all_hmfx(Frames_hmpsvbfx *frames, Map_psvbfx *storage);
+
+void frames_hmpsvbfx_measure_and_store_bv(Frames_hmpsvbfx *frames,
+                                          uintptr_t bit,
+                                          BufferedVector_psvb *storage);
+
+void frames_hmpsvbfx_measure_and_store_all_bv(Frames_hmpsvbfx *frames,
+                                              BufferedVector_psvb *storage);
+
+void frames_hmpsvbfx_measure_and_store_mvfx(Frames_hmpsvbfx *frames,
+                                            uintptr_t bit,
+                                            MappedVector_psvbfx *storage);
+
+void frames_hmpsvbfx_measure_and_store_all_mvfx(Frames_hmpsvbfx *frames,
+                                                MappedVector_psvbfx *storage);
+
+void frames_bvpsvb_measure_and_store_hmfx(Frames_bvpsvb *frames,
+                                          uintptr_t bit,
+                                          Map_psvbfx *storage);
+
+void frames_bvpsvb_measure_and_store_all_hmfx(Frames_bvpsvb *frames, Map_psvbfx *storage);
+
+void frames_bvpsvb_measure_and_store_bv(Frames_bvpsvb *frames,
+                                        uintptr_t bit,
+                                        BufferedVector_psvb *storage);
+
+void frames_bvpsvb_measure_and_store_all_bv(Frames_bvpsvb *frames, BufferedVector_psvb *storage);
+
+void frames_bvpsvb_measure_and_store_mvfx(Frames_bvpsvb *frames,
+                                          uintptr_t bit,
+                                          MappedVector_psvbfx *storage);
+
+void frames_bvpsvb_measure_and_store_all_mvfx(Frames_bvpsvb *frames, MappedVector_psvbfx *storage);
+
+void frames_mvpsvb_measure_and_store_hmfx(Frames_mvpsvbfx *frames,
+                                          uintptr_t bit,
+                                          Map_psvbfx *storage);
+
+void frames_mvpsvb_measure_and_store_all_hmfx(Frames_mvpsvbfx *frames, Map_psvbfx *storage);
+
+void frames_mvpsvb_measure_and_store_bv(Frames_mvpsvbfx *frames,
+                                        uintptr_t bit,
+                                        BufferedVector_psvb *storage);
+
+void frames_mvpsvb_measure_and_store_all_bv(Frames_mvpsvbfx *frames, BufferedVector_psvb *storage);
+
+void frames_mvpsvb_measure_and_store_mvfx(Frames_mvpsvbfx *frames,
+                                          uintptr_t bit,
+                                          MappedVector_psvbfx *storage);
+
+void frames_mvpsvb_measure_and_store_all_mvfx(Frames_mvpsvbfx *frames,
+                                              MappedVector_psvbfx *storage);
+
+void frames_hmpsbvfx_measure_and_store_hmfx(Frames_hmpsbvfx *frames,
+                                            uintptr_t bit,
+                                            Map_psbvfx *storage);
+
+void frames_hmpsbvfx_measure_and_store_all_hmfx(Frames_hmpsbvfx *frames, Map_psbvfx *storage);
+
+void frames_hmpsbvfx_measure_and_store_bv(Frames_hmpsbvfx *frames,
+                                          uintptr_t bit,
+                                          BufferedVector_psbv *storage);
+
+void frames_hmpsbvfx_measure_and_store_all_bv(Frames_hmpsbvfx *frames,
+                                              BufferedVector_psbv *storage);
+
+void frames_hmpsbvfx_measure_and_store_mvfx(Frames_hmpsbvfx *frames,
+                                            uintptr_t bit,
+                                            MappedVector_psbvfx *storage);
+
+void frames_hmpsbvfx_measure_and_store_all_mvfx(Frames_hmpsbvfx *frames,
+                                                MappedVector_psbvfx *storage);
+
+void frames_bvpsbv_measure_and_store_hmfx(Frames_bvpsbv *frames,
+                                          uintptr_t bit,
+                                          Map_psbvfx *storage);
+
+void frames_bvpsbv_measure_and_store_all_hmfx(Frames_bvpsbv *frames, Map_psbvfx *storage);
+
+void frames_bvpsbv_measure_and_store_bv(Frames_bvpsbv *frames,
+                                        uintptr_t bit,
+                                        BufferedVector_psbv *storage);
+
+void frames_bvpsbv_measure_and_store_all_bv(Frames_bvpsbv *frames, BufferedVector_psbv *storage);
+
+void frames_bvpsbv_measure_and_store_mvfx(Frames_bvpsbv *frames,
+                                          uintptr_t bit,
+                                          MappedVector_psbvfx *storage);
+
+void frames_bvpsbv_measure_and_store_all_mvfx(Frames_bvpsbv *frames, MappedVector_psbvfx *storage);
+
+void frames_mvpsbv_measure_and_store_hmfx(Frames_mvpsbvfx *frames,
+                                          uintptr_t bit,
+                                          Map_psbvfx *storage);
+
+void frames_mvpsbv_measure_and_store_all_hmfx(Frames_mvpsbvfx *frames, Map_psbvfx *storage);
+
+void frames_mvpsbv_measure_and_store_bv(Frames_mvpsbvfx *frames,
+                                        uintptr_t bit,
+                                        BufferedVector_psbv *storage);
+
+void frames_mvpsbv_measure_and_store_all_bv(Frames_mvpsbvfx *frames, BufferedVector_psbv *storage);
+
+void frames_mvpsbv_measure_and_store_mvfx(Frames_mvpsbvfx *frames,
+                                          uintptr_t bit,
+                                          MappedVector_psbvfx *storage);
+
+void frames_mvpsbv_measure_and_store_all_mvfx(Frames_mvpsbvfx *frames,
+                                              MappedVector_psbvfx *storage);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Vec_psvb *vec_psvb_new(void);
+
+/**
+ * Frees the input instance.
+ */
+void vec_psvb_free(Vec_psvb *x);
+
+/**
+ * Serialize into json.
+ */
+void vec_psvb_serialize(const Vec_psvb *x, const char *file);
+
+/**
+ * Deserialize from json.
+ *
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Vec_psvb *vec_psvb_deserialize(const char *file);
+
+RawVec_psvb vec_psvb_get_raw(Vec_psvb *x);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Vec_psbv *vec_psbv_new(void);
+
+/**
+ * Frees the input instance.
+ */
+void vec_psbv_free(Vec_psbv *x);
+
+/**
+ * Serialize into json.
+ */
+void vec_psbv_serialize(const Vec_psbv *x, const char *file);
+
+/**
+ * Deserialize from json.
+ *
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Vec_psbv *vec_psbv_deserialize(const char *file);
+
+RawVec_psbv vec_psbv_get_raw(Vec_psbv *x);
+
+/**
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_hmpefx *live_hmpefx_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void live_hmpefx_free(Live_hmpefx *x);
 
@@ -1489,12 +1785,12 @@ void live_hmpefx_serialize(const Live_hmpefx *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_hmpefx *live_hmpefx_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_hmpefx *live_hmpefx_init(uintptr_t num_qubits);
 
@@ -1547,12 +1843,12 @@ void live_hmpefx_new_qubit(Live_hmpefx *tracker, uintptr_t qubit);
 PauliEnum live_hmpefx_measure(Live_hmpefx *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_bvpe *live_bvpe_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void live_bvpe_free(Live_bvpe *x);
 
@@ -1564,12 +1860,12 @@ void live_bvpe_serialize(const Live_bvpe *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_bvpe *live_bvpe_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_bvpe *live_bvpe_init(uintptr_t num_qubits);
 
@@ -1622,12 +1918,12 @@ void live_bvpe_new_qubit(Live_bvpe *tracker, uintptr_t qubit);
 PauliEnum live_bvpe_measure(Live_bvpe *tracker, uintptr_t qubit);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_bvpt *live_bvpt_new(void);
 
 /**
- * Frees the instance.
+ * Frees the input instance.
  */
 void live_bvpt_free(Live_bvpt *x);
 
@@ -1639,12 +1935,12 @@ void live_bvpt_serialize(const Live_bvpt *x, const char *file);
 /**
  * Deserialize from json.
  *
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_bvpt *live_bvpt_deserialize(const char *file);
 
 /**
- * The instance has to be freed manually with the according `*_free` function.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Live_bvpt *live_bvpt_init(uintptr_t num_qubits);
 

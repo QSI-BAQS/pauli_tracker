@@ -65,9 +65,10 @@ impl Parse for GenWithAdditional {
     }
 }
 
-const MUST_FREE: &str =
-    " The instance has to be freed manually with the according `*_free` function.";
-const FREES: &str = " Frees the instance.";
+const MUST_FREE: &str = " The returned instance has to be freed manually with the \
+                         according `*_free` function or indirecly with another \
+                         function that consumes and frees it.";
+const FREES: &str = " Frees the input instance.";
 
 #[proc_macro]
 pub fn raw_vec(input: TokenStream) -> TokenStream {
@@ -206,6 +207,7 @@ pub fn boolean_vector(input: TokenStream) -> TokenStream {
     let get = pre.name("get");
     let len = pre.name("len");
     let is_empty = pre.name("is_empty");
+    let resize = pre.name("resize");
 
     quote! {
         #[no_mangle]
@@ -222,6 +224,11 @@ pub fn boolean_vector(input: TokenStream) -> TokenStream {
         #[no_mangle]
         pub extern "C" fn #is_empty(x: &#typ) -> bool {
             <#typ as BooleanVector>::is_empty(x)
+        }
+
+        #[no_mangle]
+        pub extern "C" fn #resize(x: &mut #typ, len: usize, flag: bool) {
+            <#typ as BooleanVector>::resize(x, len, flag)
         }
     }
     .into()
@@ -449,32 +456,101 @@ pub fn tracker(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
-pub fn measure_and_store(input: TokenStream) -> TokenStream {
+pub fn frames(input: TokenStream) -> TokenStream {
     let GenWithAdditional {
         gen: Gen { typ, pre },
         mut additional,
     } = parse_macro_input!(input as GenWithAdditional);
 
-    let measure_and_store = pre.name("measure_and_store");
-    let measure_and_store_all = pre.name("measure_and_store_all");
+    let transpose_reverted = pre.name("transpose_reverted");
+    let frames_num = pre.name("frames_num");
+    let into_storage = pre.name("into_storage");
+    let as_storage = pre.name("as_storage");
+    let new_unchecked = pre.name("new_unchecked");
+
     let storage = additional.pop().unwrap();
+    let stack = additional.pop().unwrap();
+
+    quote! {
+        #[doc = #FREES]
+        #[doc = #MUST_FREE]
+        #[no_mangle]
+        pub unsafe extern "C" fn #transpose_reverted(
+            frames: *mut #typ,
+            num_frames: usize,
+        ) -> *mut Vec<#stack> {
+            let frames = unsafe { Box::from_raw(frames) };
+            std::mem::ManuallyDrop::new(Box::new(frames.transpose_reverted(num_frames)))
+                .as_mut() as *mut Vec<#stack>
+        }
+
+        #[no_mangle]
+        pub extern "C" fn #frames_num(frames: &mut #typ) -> usize {
+            frames.frames_num()
+        }
+
+        #[doc = #FREES]
+        #[doc = #MUST_FREE]
+        #[no_mangle]
+        pub unsafe extern "C" fn #into_storage(frames: *mut #typ) -> *mut #storage {
+            let frames = unsafe { Box::from_raw(frames) };
+            std::mem::ManuallyDrop::new(Box::new(frames.into_storage()))
+                .as_mut() as *mut #storage
+        }
+
+        #[no_mangle]
+        pub extern "C" fn #as_storage(frames: &mut #typ) -> *const #storage {
+            frames.as_storage()
+        }
+
+        #[doc = #FREES]
+        #[doc = #MUST_FREE]
+        #[no_mangle]
+        pub unsafe extern "C" fn #new_unchecked(
+            storage: *mut #storage,
+            num_frames: usize,
+        ) -> *mut #typ {
+            let storage = unsafe { Box::from_raw(storage) };
+            std::mem::ManuallyDrop::new(
+                Box::new(#typ::new_unchecked(*storage, num_frames))
+            ).as_mut() as *mut #typ
+        }
+    }
+    .into()
+}
+
+#[proc_macro]
+pub fn frames_measure(input: TokenStream) -> TokenStream {
+    let GenWithAdditional {
+        gen: Gen { typ, pre },
+        mut additional,
+    } = parse_macro_input!(input as GenWithAdditional);
+
+    let storage_pre = additional.pop().unwrap().to_string();
+    let storage = additional.pop().unwrap();
+    let mut measure_and_store = "measure_and_store".to_string();
+    measure_and_store.push_str(storage_pre.as_str());
+    let measure_and_store = pre.name(measure_and_store.as_str());
+    let mut measure_and_store_all = "measure_and_store_all".to_string();
+    measure_and_store_all.push_str(storage_pre.as_str());
+    let measure_and_store_all = pre.name(measure_and_store_all.as_str());
 
     quote! {
         #[no_mangle]
         pub extern "C" fn #measure_and_store(
-            tracker: &mut #typ,
+            frames: &mut #typ,
             bit: usize,
             storage: &mut #storage,
         ) {
-            tracker.measure_and_store(bit, storage).unwrap();
+            frames.measure_and_store(bit, storage).unwrap();
         }
 
         #[no_mangle]
         pub extern "C" fn #measure_and_store_all(
-            tracker: &mut #typ,
+            frames: &mut #typ,
             storage: &mut #storage,
         ) {
-            tracker.measure_and_store_all(storage);
+            frames.measure_and_store_all(storage);
         }
     }
     .into()

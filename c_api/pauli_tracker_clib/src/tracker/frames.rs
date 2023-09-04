@@ -16,6 +16,8 @@ use crate::{
         Map_psvbfx,
         MappedVector_psbvfx,
         MappedVector_psvbfx,
+        RawVec_psbv,
+        RawVec_psvb,
     },
     pauli::{
         PauliStack_bv,
@@ -30,22 +32,63 @@ pub type Frames_bvpsbv = Frames<BufferedVector_psbv>;
 pub type Frames_mvpsvbfx = Frames<MappedVector_psvbfx>;
 pub type Frames_mvpsbvfx = Frames<MappedVector_psbvfx>;
 
+pub type Vec_psvb = Vec<PauliStack_vb>;
+pub type Vec_psbv = Vec<PauliStack_bv>;
+
 macro_rules! boilerplate {
-    ($(($typ:ty, $pre:tt, $storage:ty, $stack:ty),)*) => {$(
+    ($(($typ:ty, $pre:tt, $stack:ty, $storage:ty),)*) => {$(
         impl_api::basic!($typ, $pre);
         impl_api::init!($typ, $pre);
         impl_api::tracker!($typ, $pre, $stack, is_frames);
-        impl_api::measure_and_store!($typ, $pre, $storage);
+        impl_api::frames!($typ, $pre, $stack, $storage);
+    )*};
+}
+
+macro_rules! boilerplate_measure_vb {
+    ($(($typ:ty, $pre:tt),)*) => {$(
+        impl_api::frames_measure!($typ, $pre, Map_psvbfx, _hmfx);
+        impl_api::frames_measure!($typ, $pre, BufferedVector_psvb, _bv);
+        impl_api::frames_measure!($typ, $pre, MappedVector_psvbfx, _mvfx);
+    )*};
+}
+macro_rules! boilerplate_measure_bv {
+    ($(($typ:ty, $pre:tt),)*) => {$(
+        impl_api::frames_measure!($typ, $pre, Map_psbvfx, _hmfx);
+        impl_api::frames_measure!($typ, $pre, BufferedVector_psbv, _bv);
+        impl_api::frames_measure!($typ, $pre, MappedVector_psbvfx, _mvfx);
+    )*};
+}
+
+macro_rules! boilerplate_vecs {
+    ($(($typ:ty, $pre:tt, $raw_typ:ty),)*) => {$(
+        impl_api::basic!($typ, $pre);
+        impl_api::raw_vec!($typ, $pre, $raw_typ);
     )*};
 }
 
 // actually, one should also include the storage abbreviation in the name, but since we
 // always use Map_* as storage, I'm omitting it here (for now)
 boilerplate!(
-    (Frames_hmpsvbfx, frames_hmpsvbfx_, Map_psvbfx, PauliStack_vb),
-    (Frames_hmpsbvfx, frames_hmpsbvfx_, Map_psbvfx, PauliStack_bv),
-    (Frames_bvpsvb, frames_bvpsvb_, Map_psvbfx, PauliStack_vb),
-    (Frames_bvpsbv, frames_bvpsbv_, Map_psbvfx, PauliStack_bv),
-    (Frames_mvpsvbfx, frames_mvpsvb_, MappedVector_psvbfx, PauliStack_vb),
-    (Frames_mvpsbvfx, frames_mvpsbv_, MappedVector_psbvfx, PauliStack_bv),
+    (Frames_hmpsvbfx, frames_hmpsvbfx_, PauliStack_vb, Map_psvbfx),
+    (Frames_hmpsbvfx, frames_hmpsbvfx_, PauliStack_bv, Map_psbvfx),
+    (Frames_bvpsvb, frames_bvpsvb_, PauliStack_vb, BufferedVector_psvb),
+    (Frames_bvpsbv, frames_bvpsbv_, PauliStack_bv, BufferedVector_psbv),
+    (Frames_mvpsvbfx, frames_mvpsvb_, PauliStack_vb, MappedVector_psvbfx),
+    (Frames_mvpsbvfx, frames_mvpsbv_, PauliStack_bv, MappedVector_psbvfx),
+);
+
+boilerplate_measure_vb!(
+    (Frames_hmpsvbfx, frames_hmpsvbfx_),
+    (Frames_bvpsvb, frames_bvpsvb_),
+    (Frames_mvpsvbfx, frames_mvpsvb_),
+);
+boilerplate_measure_bv!(
+    (Frames_hmpsbvfx, frames_hmpsbvfx_),
+    (Frames_bvpsbv, frames_bvpsbv_),
+    (Frames_mvpsbvfx, frames_mvpsbv_),
+);
+
+boilerplate_vecs!(
+    (Vec_psvb, vec_psvb_, RawVec_psvb),
+    (Vec_psbv, vec_psbv_, RawVec_psbv),
 );
