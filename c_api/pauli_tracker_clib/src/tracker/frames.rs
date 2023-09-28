@@ -22,6 +22,7 @@ use crate::{
     pauli::{
         PauliStack_bv,
         PauliStack_vb,
+        PauliTuple,
     },
 };
 
@@ -36,11 +37,11 @@ pub type Vec_psvb = Vec<PauliStack_vb>;
 pub type Vec_psbv = Vec<PauliStack_bv>;
 
 macro_rules! boilerplate {
-    ($(($typ:ty, $pre:tt, $stack:ty, $storage:ty),)*) => {$(
+    ($(($typ:ty, $pre:tt, $pauli:ty, $stack:ty, $storage:ty),)*) => {$(
         impl_api::basic!($typ, $pre);
         impl_api::init!($typ, $pre);
         impl_api::tracker!($typ, $pre, $stack, is_frames);
-        impl_api::frames!($typ, $pre, $stack, $storage);
+        impl_api::frames!($typ, $pre, $pauli, $storage);
     )*};
 }
 
@@ -69,12 +70,48 @@ macro_rules! boilerplate_vecs {
 // actually, one should also include the storage abbreviation in the name, but since we
 // always use Map_* as storage, I'm omitting it here (for now)
 boilerplate!(
-    (Frames_hmpsvbfx, frames_hmpsvbfx_, PauliStack_vb, Map_psvbfx),
-    (Frames_hmpsbvfx, frames_hmpsbvfx_, PauliStack_bv, Map_psbvfx),
-    (Frames_bvpsvb, frames_bvpsvb_, PauliStack_vb, BufferedVector_psvb),
-    (Frames_bvpsbv, frames_bvpsbv_, PauliStack_bv, BufferedVector_psbv),
-    (Frames_mvpsvbfx, frames_mvpsvb_, PauliStack_vb, MappedVector_psvbfx),
-    (Frames_mvpsbvfx, frames_mvpsbv_, PauliStack_bv, MappedVector_psbvfx),
+    (
+        Frames_hmpsvbfx,
+        frames_hmpsvbfx_,
+        PauliTuple,
+        PauliStack_vb,
+        Map_psvbfx
+    ),
+    (
+        Frames_hmpsbvfx,
+        frames_hmpsbvfx_,
+        PauliTuple,
+        PauliStack_bv,
+        Map_psbvfx
+    ),
+    (
+        Frames_bvpsvb,
+        frames_bvpsvb_,
+        PauliTuple,
+        PauliStack_vb,
+        BufferedVector_psvb
+    ),
+    (
+        Frames_bvpsbv,
+        frames_bvpsbv_,
+        PauliTuple,
+        PauliStack_bv,
+        BufferedVector_psbv
+    ),
+    (
+        Frames_mvpsvbfx,
+        frames_mvpsvb_,
+        PauliTuple,
+        PauliStack_vb,
+        MappedVector_psvbfx
+    ),
+    (
+        Frames_mvpsbvfx,
+        frames_mvpsbv_,
+        PauliTuple,
+        PauliStack_bv,
+        MappedVector_psbvfx
+    ),
 );
 
 boilerplate_measure_vb!(

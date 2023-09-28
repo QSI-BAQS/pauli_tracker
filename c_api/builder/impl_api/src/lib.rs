@@ -469,7 +469,7 @@ pub fn frames(input: TokenStream) -> TokenStream {
     let new_unchecked = pre.name("new_unchecked");
 
     let storage = additional.pop().unwrap();
-    let stack = additional.pop().unwrap();
+    let pauli = additional.pop().unwrap();
 
     quote! {
         #[doc = #FREES]
@@ -478,10 +478,10 @@ pub fn frames(input: TokenStream) -> TokenStream {
         pub unsafe extern "C" fn #transpose_reverted(
             frames: *mut #typ,
             num_frames: usize,
-        ) -> *mut Vec<#stack> {
+        ) -> *mut Vec<Vec<#pauli>> {
             let frames = unsafe { Box::from_raw(frames) };
             std::mem::ManuallyDrop::new(Box::new(frames.transpose_reverted(num_frames)))
-                .as_mut() as *mut Vec<#stack>
+                .as_mut() as *mut Vec<Vec<#pauli>>
         }
 
         #[no_mangle]
