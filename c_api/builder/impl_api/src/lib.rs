@@ -129,7 +129,7 @@ pub fn basic(input: TokenStream) -> TokenStream {
         #[doc = #FREES]
         #[no_mangle]
         pub unsafe extern "C" fn #free(x: *mut #typ) {
-            unsafe { Box::from_raw(x) };
+            unsafe { drop(Box::from_raw(x)) };
         }
 
         /// Serialize into json.
