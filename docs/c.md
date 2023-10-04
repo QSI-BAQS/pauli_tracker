@@ -4,11 +4,12 @@ The relevant code is in the [c_api](../c_api) directory.
 
 ## Compiling the library
 
-The header file is `pauli_tracker.h`. Run `make library` (or do what the makefile does)
-to generate a static and a dynamic library (`make header` to rebuild the header). The
-files are located in `output`.
+The header file is `pauli_tracker.h`. On Linux, run `make library` (do the equivalent of
+what makefile does on window or macos) to generate a static and a dynamic library (`make
+header` to rebuild the header). The files are located in `output` (there pre-built
+header file is in the current directory).
 
-There's also a Dockerfile to build the library for **linux**:
+There's also a Dockerfile to build the library for Linux:
 ```bash
 docker build --network=host -t pauli .
 docker create --name pauli pauli:latest
