@@ -298,23 +298,31 @@ pub fn tracker(input: TokenStream) -> TokenStream {
     let track_y = pre.name("track_y");
     let track_z = pre.name("track_z");
 
-    let h = pre.name("h");
-    let s = pre.name("s");
-    let cz = pre.name("cz");
-
+    let id = pre.name("id");
     let x = pre.name("x");
     let y = pre.name("y");
     let z = pre.name("z");
+    let s = pre.name("s");
     let sdg = pre.name("sdg");
-    let sx = pre.name("sx");
-    let sxdg = pre.name("sxdg");
-    let sy = pre.name("sy");
-    let sydg = pre.name("sydg");
     let sz = pre.name("sz");
     let szdg = pre.name("szdg");
+    let hxy = pre.name("hxy");
+    let h = pre.name("h");
+    let sy = pre.name("sy");
+    let sydg = pre.name("sydg");
+    let sh = pre.name("sh");
+    let hs = pre.name("hs");
+    let shs = pre.name("shs");
+    let sx = pre.name("sx");
+    let sxdg = pre.name("sxdg");
+    let hyz = pre.name("hyz");
 
+    let cz = pre.name("cz");
     let cx = pre.name("cx");
+    let cy = pre.name("cy");
     let swap = pre.name("swap");
+    let iswap = pre.name("iswap");
+    let iswapdg = pre.name("iswapdg");
 
     let move_x_to_x = pre.name("move_x_to_x");
     let move_x_to_z = pre.name("move_x_to_z");
@@ -352,31 +360,17 @@ pub fn tracker(input: TokenStream) -> TokenStream {
         pub extern "C" fn #track_x(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::track_x(tracker, qubit);
         }
-
         #[no_mangle]
         pub extern "C" fn #track_y(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::track_y(tracker, qubit);
         }
-
         #[no_mangle]
         pub extern "C" fn #track_z(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::track_z(tracker, qubit);
         }
 
         #[no_mangle]
-        pub extern "C" fn #h(tracker: &mut #typ, qubit: usize) {
-            <#typ as Tracker>::h(tracker, qubit);
-        }
-        #[no_mangle]
-        pub extern "C" fn #s(tracker: &mut #typ, qubit: usize) {
-            <#typ as Tracker>::s(tracker, qubit);
-        }
-        #[no_mangle]
-        pub extern "C"
-        fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
-            <#typ as Tracker>::cz(tracker, qubit_a, qubit_b);
-        }
-
+        pub extern "C" fn #id(_: &mut #typ, _: usize) {}
         #[no_mangle]
         pub extern "C" fn #x(_: &mut #typ, _: usize) {}
         #[no_mangle]
@@ -384,16 +378,28 @@ pub fn tracker(input: TokenStream) -> TokenStream {
         #[no_mangle]
         pub extern "C" fn #z(_: &mut #typ, _: usize) {}
         #[no_mangle]
+        pub extern "C" fn #s(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::s(tracker, qubit);
+        }
+        #[no_mangle]
         pub extern "C" fn #sdg(tracker: &mut #typ, qubit: usize) {
             <#typ as Tracker>::sdg(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C" fn #sx(tracker: &mut #typ, qubit: usize) {
-            <#typ as Tracker>::sx(tracker, qubit);
+        pub extern "C" fn #sz(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sz(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C" fn #sxdg(tracker: &mut #typ, qubit: usize) {
-            <#typ as Tracker>::sxdg(tracker, qubit);
+        pub extern "C" fn #szdg(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::szdg(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C" fn #hxy(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::hxy(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C" fn #h(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::h(tracker, qubit);
         }
         #[no_mangle]
         pub extern "C" fn #sy(tracker: &mut #typ, qubit: usize) {
@@ -404,23 +410,53 @@ pub fn tracker(input: TokenStream) -> TokenStream {
             <#typ as Tracker>::sydg(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C" fn #sz(tracker: &mut #typ, qubit: usize) {
-            <#typ as Tracker>::sz(tracker, qubit);
+        pub extern "C" fn #sh(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sh(tracker, qubit);
         }
         #[no_mangle]
-        pub extern "C" fn #szdg(tracker: &mut #typ, qubit: usize) {
-            <#typ as Tracker>::szdg(tracker, qubit);
+        pub extern "C" fn #hs(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::hs(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C" fn #shs(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::shs(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C" fn #sx(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sx(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C" fn #sxdg(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::sxdg(tracker, qubit);
+        }
+        #[no_mangle]
+        pub extern "C" fn #hyz(tracker: &mut #typ, qubit: usize) {
+            <#typ as Tracker>::hyz(tracker, qubit);
         }
 
         #[no_mangle]
-        pub extern "C"
-        fn #cx(tracker: &mut #typ, control: usize, target: usize) {
+        pub extern "C" fn #cz(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+            <#typ as Tracker>::cz(tracker, qubit_a, qubit_b);
+        }
+        #[no_mangle]
+        pub extern "C" fn #cx(tracker: &mut #typ, control: usize, target: usize) {
             <#typ as Tracker>::cx(tracker, control, target);
         }
         #[no_mangle]
-        pub extern "C"
-        fn #swap(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+        pub extern "C" fn #cy(tracker: &mut #typ, control: usize, target: usize) {
+            <#typ as Tracker>::cy(tracker, control, target);
+        }
+        #[no_mangle]
+        pub extern "C" fn #swap(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
             <#typ as Tracker>::swap(tracker, qubit_b, qubit_a);
+        }
+        #[no_mangle]
+        pub extern "C" fn #iswap(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+            <#typ as Tracker>::iswap(tracker, qubit_b, qubit_a);
+        }
+        #[no_mangle]
+        pub extern "C" fn #iswapdg(tracker: &mut #typ, qubit_a: usize, qubit_b: usize) {
+            <#typ as Tracker>::iswapdg(tracker, qubit_b, qubit_a);
         }
 
         #[no_mangle]

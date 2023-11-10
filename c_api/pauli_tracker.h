@@ -261,6 +261,8 @@ typedef struct Vec_PauliStack_bv Vec_PauliStack_bv;
 
 typedef struct Vec_PauliStack_vb Vec_PauliStack_vb;
 
+typedef struct Vec_Vec_PauliTuple Vec_Vec_PauliTuple;
+
 typedef struct Vec_bool Vec_bool;
 
 typedef struct Vec_bool Vec_b;
@@ -1020,11 +1022,7 @@ void frames_hmpsvbfx_track_y(Frames_hmpsvbfx *tracker, uintptr_t qubit);
 
 void frames_hmpsvbfx_track_z(Frames_hmpsvbfx *tracker, uintptr_t qubit);
 
-void frames_hmpsvbfx_h(Frames_hmpsvbfx *tracker, uintptr_t qubit);
-
-void frames_hmpsvbfx_s(Frames_hmpsvbfx *tracker, uintptr_t qubit);
-
-void frames_hmpsvbfx_cz(Frames_hmpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void frames_hmpsvbfx_id(Frames_hmpsvbfx*, uintptr_t);
 
 void frames_hmpsvbfx_x(Frames_hmpsvbfx*, uintptr_t);
 
@@ -1032,23 +1030,45 @@ void frames_hmpsvbfx_y(Frames_hmpsvbfx*, uintptr_t);
 
 void frames_hmpsvbfx_z(Frames_hmpsvbfx*, uintptr_t);
 
+void frames_hmpsvbfx_s(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
 void frames_hmpsvbfx_sdg(Frames_hmpsvbfx *tracker, uintptr_t qubit);
-
-void frames_hmpsvbfx_sx(Frames_hmpsvbfx *tracker, uintptr_t qubit);
-
-void frames_hmpsvbfx_sxdg(Frames_hmpsvbfx *tracker, uintptr_t qubit);
-
-void frames_hmpsvbfx_sy(Frames_hmpsvbfx *tracker, uintptr_t qubit);
-
-void frames_hmpsvbfx_sydg(Frames_hmpsvbfx *tracker, uintptr_t qubit);
 
 void frames_hmpsvbfx_sz(Frames_hmpsvbfx *tracker, uintptr_t qubit);
 
 void frames_hmpsvbfx_szdg(Frames_hmpsvbfx *tracker, uintptr_t qubit);
 
+void frames_hmpsvbfx_hxy(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_h(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_sy(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_sydg(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_sh(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_hs(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_shs(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_sx(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_sxdg(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_hyz(Frames_hmpsvbfx *tracker, uintptr_t qubit);
+
+void frames_hmpsvbfx_cz(Frames_hmpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void frames_hmpsvbfx_cx(Frames_hmpsvbfx *tracker, uintptr_t control, uintptr_t target);
 
+void frames_hmpsvbfx_cy(Frames_hmpsvbfx *tracker, uintptr_t control, uintptr_t target);
+
 void frames_hmpsvbfx_swap(Frames_hmpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_hmpsvbfx_iswap(Frames_hmpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_hmpsvbfx_iswapdg(Frames_hmpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void frames_hmpsvbfx_move_x_to_x(Frames_hmpsvbfx *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1070,8 +1090,8 @@ PauliStack_vb *frames_hmpsvbfx_measure(Frames_hmpsvbfx *tracker,
  * Frees the input instance.
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-struct Vec_PauliStack_vb *frames_hmpsvbfx_transpose_reverted(Frames_hmpsvbfx *frames,
-                                                             uintptr_t num_frames);
+struct Vec_Vec_PauliTuple *frames_hmpsvbfx_transpose_reverted(Frames_hmpsvbfx *frames,
+                                                              uintptr_t num_frames);
 
 uintptr_t frames_hmpsvbfx_frames_num(Frames_hmpsvbfx *frames);
 
@@ -1123,11 +1143,7 @@ void frames_hmpsbvfx_track_y(Frames_hmpsbvfx *tracker, uintptr_t qubit);
 
 void frames_hmpsbvfx_track_z(Frames_hmpsbvfx *tracker, uintptr_t qubit);
 
-void frames_hmpsbvfx_h(Frames_hmpsbvfx *tracker, uintptr_t qubit);
-
-void frames_hmpsbvfx_s(Frames_hmpsbvfx *tracker, uintptr_t qubit);
-
-void frames_hmpsbvfx_cz(Frames_hmpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void frames_hmpsbvfx_id(Frames_hmpsbvfx*, uintptr_t);
 
 void frames_hmpsbvfx_x(Frames_hmpsbvfx*, uintptr_t);
 
@@ -1135,23 +1151,45 @@ void frames_hmpsbvfx_y(Frames_hmpsbvfx*, uintptr_t);
 
 void frames_hmpsbvfx_z(Frames_hmpsbvfx*, uintptr_t);
 
+void frames_hmpsbvfx_s(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
 void frames_hmpsbvfx_sdg(Frames_hmpsbvfx *tracker, uintptr_t qubit);
-
-void frames_hmpsbvfx_sx(Frames_hmpsbvfx *tracker, uintptr_t qubit);
-
-void frames_hmpsbvfx_sxdg(Frames_hmpsbvfx *tracker, uintptr_t qubit);
-
-void frames_hmpsbvfx_sy(Frames_hmpsbvfx *tracker, uintptr_t qubit);
-
-void frames_hmpsbvfx_sydg(Frames_hmpsbvfx *tracker, uintptr_t qubit);
 
 void frames_hmpsbvfx_sz(Frames_hmpsbvfx *tracker, uintptr_t qubit);
 
 void frames_hmpsbvfx_szdg(Frames_hmpsbvfx *tracker, uintptr_t qubit);
 
+void frames_hmpsbvfx_hxy(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_h(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_sy(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_sydg(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_sh(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_hs(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_shs(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_sx(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_sxdg(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_hyz(Frames_hmpsbvfx *tracker, uintptr_t qubit);
+
+void frames_hmpsbvfx_cz(Frames_hmpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void frames_hmpsbvfx_cx(Frames_hmpsbvfx *tracker, uintptr_t control, uintptr_t target);
 
+void frames_hmpsbvfx_cy(Frames_hmpsbvfx *tracker, uintptr_t control, uintptr_t target);
+
 void frames_hmpsbvfx_swap(Frames_hmpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_hmpsbvfx_iswap(Frames_hmpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_hmpsbvfx_iswapdg(Frames_hmpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void frames_hmpsbvfx_move_x_to_x(Frames_hmpsbvfx *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1173,8 +1211,8 @@ PauliStack_bv *frames_hmpsbvfx_measure(Frames_hmpsbvfx *tracker,
  * Frees the input instance.
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-struct Vec_PauliStack_bv *frames_hmpsbvfx_transpose_reverted(Frames_hmpsbvfx *frames,
-                                                             uintptr_t num_frames);
+struct Vec_Vec_PauliTuple *frames_hmpsbvfx_transpose_reverted(Frames_hmpsbvfx *frames,
+                                                              uintptr_t num_frames);
 
 uintptr_t frames_hmpsbvfx_frames_num(Frames_hmpsbvfx *frames);
 
@@ -1226,11 +1264,7 @@ void frames_bvpsvb_track_y(Frames_bvpsvb *tracker, uintptr_t qubit);
 
 void frames_bvpsvb_track_z(Frames_bvpsvb *tracker, uintptr_t qubit);
 
-void frames_bvpsvb_h(Frames_bvpsvb *tracker, uintptr_t qubit);
-
-void frames_bvpsvb_s(Frames_bvpsvb *tracker, uintptr_t qubit);
-
-void frames_bvpsvb_cz(Frames_bvpsvb *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void frames_bvpsvb_id(Frames_bvpsvb*, uintptr_t);
 
 void frames_bvpsvb_x(Frames_bvpsvb*, uintptr_t);
 
@@ -1238,23 +1272,45 @@ void frames_bvpsvb_y(Frames_bvpsvb*, uintptr_t);
 
 void frames_bvpsvb_z(Frames_bvpsvb*, uintptr_t);
 
+void frames_bvpsvb_s(Frames_bvpsvb *tracker, uintptr_t qubit);
+
 void frames_bvpsvb_sdg(Frames_bvpsvb *tracker, uintptr_t qubit);
-
-void frames_bvpsvb_sx(Frames_bvpsvb *tracker, uintptr_t qubit);
-
-void frames_bvpsvb_sxdg(Frames_bvpsvb *tracker, uintptr_t qubit);
-
-void frames_bvpsvb_sy(Frames_bvpsvb *tracker, uintptr_t qubit);
-
-void frames_bvpsvb_sydg(Frames_bvpsvb *tracker, uintptr_t qubit);
 
 void frames_bvpsvb_sz(Frames_bvpsvb *tracker, uintptr_t qubit);
 
 void frames_bvpsvb_szdg(Frames_bvpsvb *tracker, uintptr_t qubit);
 
+void frames_bvpsvb_hxy(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_h(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_sy(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_sydg(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_sh(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_hs(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_shs(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_sx(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_sxdg(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_hyz(Frames_bvpsvb *tracker, uintptr_t qubit);
+
+void frames_bvpsvb_cz(Frames_bvpsvb *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void frames_bvpsvb_cx(Frames_bvpsvb *tracker, uintptr_t control, uintptr_t target);
 
+void frames_bvpsvb_cy(Frames_bvpsvb *tracker, uintptr_t control, uintptr_t target);
+
 void frames_bvpsvb_swap(Frames_bvpsvb *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_bvpsvb_iswap(Frames_bvpsvb *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_bvpsvb_iswapdg(Frames_bvpsvb *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void frames_bvpsvb_move_x_to_x(Frames_bvpsvb *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1276,8 +1332,8 @@ PauliStack_vb *frames_bvpsvb_measure(Frames_bvpsvb *tracker,
  * Frees the input instance.
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-struct Vec_PauliStack_vb *frames_bvpsvb_transpose_reverted(Frames_bvpsvb *frames,
-                                                           uintptr_t num_frames);
+struct Vec_Vec_PauliTuple *frames_bvpsvb_transpose_reverted(Frames_bvpsvb *frames,
+                                                            uintptr_t num_frames);
 
 uintptr_t frames_bvpsvb_frames_num(Frames_bvpsvb *frames);
 
@@ -1329,11 +1385,7 @@ void frames_bvpsbv_track_y(Frames_bvpsbv *tracker, uintptr_t qubit);
 
 void frames_bvpsbv_track_z(Frames_bvpsbv *tracker, uintptr_t qubit);
 
-void frames_bvpsbv_h(Frames_bvpsbv *tracker, uintptr_t qubit);
-
-void frames_bvpsbv_s(Frames_bvpsbv *tracker, uintptr_t qubit);
-
-void frames_bvpsbv_cz(Frames_bvpsbv *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void frames_bvpsbv_id(Frames_bvpsbv*, uintptr_t);
 
 void frames_bvpsbv_x(Frames_bvpsbv*, uintptr_t);
 
@@ -1341,23 +1393,45 @@ void frames_bvpsbv_y(Frames_bvpsbv*, uintptr_t);
 
 void frames_bvpsbv_z(Frames_bvpsbv*, uintptr_t);
 
+void frames_bvpsbv_s(Frames_bvpsbv *tracker, uintptr_t qubit);
+
 void frames_bvpsbv_sdg(Frames_bvpsbv *tracker, uintptr_t qubit);
-
-void frames_bvpsbv_sx(Frames_bvpsbv *tracker, uintptr_t qubit);
-
-void frames_bvpsbv_sxdg(Frames_bvpsbv *tracker, uintptr_t qubit);
-
-void frames_bvpsbv_sy(Frames_bvpsbv *tracker, uintptr_t qubit);
-
-void frames_bvpsbv_sydg(Frames_bvpsbv *tracker, uintptr_t qubit);
 
 void frames_bvpsbv_sz(Frames_bvpsbv *tracker, uintptr_t qubit);
 
 void frames_bvpsbv_szdg(Frames_bvpsbv *tracker, uintptr_t qubit);
 
+void frames_bvpsbv_hxy(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_h(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_sy(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_sydg(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_sh(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_hs(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_shs(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_sx(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_sxdg(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_hyz(Frames_bvpsbv *tracker, uintptr_t qubit);
+
+void frames_bvpsbv_cz(Frames_bvpsbv *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void frames_bvpsbv_cx(Frames_bvpsbv *tracker, uintptr_t control, uintptr_t target);
 
+void frames_bvpsbv_cy(Frames_bvpsbv *tracker, uintptr_t control, uintptr_t target);
+
 void frames_bvpsbv_swap(Frames_bvpsbv *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_bvpsbv_iswap(Frames_bvpsbv *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_bvpsbv_iswapdg(Frames_bvpsbv *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void frames_bvpsbv_move_x_to_x(Frames_bvpsbv *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1379,8 +1453,8 @@ PauliStack_bv *frames_bvpsbv_measure(Frames_bvpsbv *tracker,
  * Frees the input instance.
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-struct Vec_PauliStack_bv *frames_bvpsbv_transpose_reverted(Frames_bvpsbv *frames,
-                                                           uintptr_t num_frames);
+struct Vec_Vec_PauliTuple *frames_bvpsbv_transpose_reverted(Frames_bvpsbv *frames,
+                                                            uintptr_t num_frames);
 
 uintptr_t frames_bvpsbv_frames_num(Frames_bvpsbv *frames);
 
@@ -1432,11 +1506,7 @@ void frames_mvpsvb_track_y(Frames_mvpsvbfx *tracker, uintptr_t qubit);
 
 void frames_mvpsvb_track_z(Frames_mvpsvbfx *tracker, uintptr_t qubit);
 
-void frames_mvpsvb_h(Frames_mvpsvbfx *tracker, uintptr_t qubit);
-
-void frames_mvpsvb_s(Frames_mvpsvbfx *tracker, uintptr_t qubit);
-
-void frames_mvpsvb_cz(Frames_mvpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void frames_mvpsvb_id(Frames_mvpsvbfx*, uintptr_t);
 
 void frames_mvpsvb_x(Frames_mvpsvbfx*, uintptr_t);
 
@@ -1444,23 +1514,45 @@ void frames_mvpsvb_y(Frames_mvpsvbfx*, uintptr_t);
 
 void frames_mvpsvb_z(Frames_mvpsvbfx*, uintptr_t);
 
+void frames_mvpsvb_s(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
 void frames_mvpsvb_sdg(Frames_mvpsvbfx *tracker, uintptr_t qubit);
-
-void frames_mvpsvb_sx(Frames_mvpsvbfx *tracker, uintptr_t qubit);
-
-void frames_mvpsvb_sxdg(Frames_mvpsvbfx *tracker, uintptr_t qubit);
-
-void frames_mvpsvb_sy(Frames_mvpsvbfx *tracker, uintptr_t qubit);
-
-void frames_mvpsvb_sydg(Frames_mvpsvbfx *tracker, uintptr_t qubit);
 
 void frames_mvpsvb_sz(Frames_mvpsvbfx *tracker, uintptr_t qubit);
 
 void frames_mvpsvb_szdg(Frames_mvpsvbfx *tracker, uintptr_t qubit);
 
+void frames_mvpsvb_hxy(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_h(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_sy(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_sydg(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_sh(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_hs(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_shs(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_sx(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_sxdg(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_hyz(Frames_mvpsvbfx *tracker, uintptr_t qubit);
+
+void frames_mvpsvb_cz(Frames_mvpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void frames_mvpsvb_cx(Frames_mvpsvbfx *tracker, uintptr_t control, uintptr_t target);
 
+void frames_mvpsvb_cy(Frames_mvpsvbfx *tracker, uintptr_t control, uintptr_t target);
+
 void frames_mvpsvb_swap(Frames_mvpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_mvpsvb_iswap(Frames_mvpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_mvpsvb_iswapdg(Frames_mvpsvbfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void frames_mvpsvb_move_x_to_x(Frames_mvpsvbfx *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1482,8 +1574,8 @@ PauliStack_vb *frames_mvpsvb_measure(Frames_mvpsvbfx *tracker,
  * Frees the input instance.
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-struct Vec_PauliStack_vb *frames_mvpsvb_transpose_reverted(Frames_mvpsvbfx *frames,
-                                                           uintptr_t num_frames);
+struct Vec_Vec_PauliTuple *frames_mvpsvb_transpose_reverted(Frames_mvpsvbfx *frames,
+                                                            uintptr_t num_frames);
 
 uintptr_t frames_mvpsvb_frames_num(Frames_mvpsvbfx *frames);
 
@@ -1535,11 +1627,7 @@ void frames_mvpsbv_track_y(Frames_mvpsbvfx *tracker, uintptr_t qubit);
 
 void frames_mvpsbv_track_z(Frames_mvpsbvfx *tracker, uintptr_t qubit);
 
-void frames_mvpsbv_h(Frames_mvpsbvfx *tracker, uintptr_t qubit);
-
-void frames_mvpsbv_s(Frames_mvpsbvfx *tracker, uintptr_t qubit);
-
-void frames_mvpsbv_cz(Frames_mvpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void frames_mvpsbv_id(Frames_mvpsbvfx*, uintptr_t);
 
 void frames_mvpsbv_x(Frames_mvpsbvfx*, uintptr_t);
 
@@ -1547,23 +1635,45 @@ void frames_mvpsbv_y(Frames_mvpsbvfx*, uintptr_t);
 
 void frames_mvpsbv_z(Frames_mvpsbvfx*, uintptr_t);
 
+void frames_mvpsbv_s(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
 void frames_mvpsbv_sdg(Frames_mvpsbvfx *tracker, uintptr_t qubit);
-
-void frames_mvpsbv_sx(Frames_mvpsbvfx *tracker, uintptr_t qubit);
-
-void frames_mvpsbv_sxdg(Frames_mvpsbvfx *tracker, uintptr_t qubit);
-
-void frames_mvpsbv_sy(Frames_mvpsbvfx *tracker, uintptr_t qubit);
-
-void frames_mvpsbv_sydg(Frames_mvpsbvfx *tracker, uintptr_t qubit);
 
 void frames_mvpsbv_sz(Frames_mvpsbvfx *tracker, uintptr_t qubit);
 
 void frames_mvpsbv_szdg(Frames_mvpsbvfx *tracker, uintptr_t qubit);
 
+void frames_mvpsbv_hxy(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_h(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_sy(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_sydg(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_sh(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_hs(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_shs(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_sx(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_sxdg(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_hyz(Frames_mvpsbvfx *tracker, uintptr_t qubit);
+
+void frames_mvpsbv_cz(Frames_mvpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void frames_mvpsbv_cx(Frames_mvpsbvfx *tracker, uintptr_t control, uintptr_t target);
 
+void frames_mvpsbv_cy(Frames_mvpsbvfx *tracker, uintptr_t control, uintptr_t target);
+
 void frames_mvpsbv_swap(Frames_mvpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_mvpsbv_iswap(Frames_mvpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void frames_mvpsbv_iswapdg(Frames_mvpsbvfx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void frames_mvpsbv_move_x_to_x(Frames_mvpsbvfx *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1585,8 +1695,8 @@ PauliStack_bv *frames_mvpsbv_measure(Frames_mvpsbvfx *tracker,
  * Frees the input instance.
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
-struct Vec_PauliStack_bv *frames_mvpsbv_transpose_reverted(Frames_mvpsbvfx *frames,
-                                                           uintptr_t num_frames);
+struct Vec_Vec_PauliTuple *frames_mvpsbv_transpose_reverted(Frames_mvpsbvfx *frames,
+                                                            uintptr_t num_frames);
 
 uintptr_t frames_mvpsbv_frames_num(Frames_mvpsbvfx *frames);
 
@@ -1800,11 +1910,7 @@ void live_hmpefx_track_y(Live_hmpefx *tracker, uintptr_t qubit);
 
 void live_hmpefx_track_z(Live_hmpefx *tracker, uintptr_t qubit);
 
-void live_hmpefx_h(Live_hmpefx *tracker, uintptr_t qubit);
-
-void live_hmpefx_s(Live_hmpefx *tracker, uintptr_t qubit);
-
-void live_hmpefx_cz(Live_hmpefx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void live_hmpefx_id(Live_hmpefx*, uintptr_t);
 
 void live_hmpefx_x(Live_hmpefx*, uintptr_t);
 
@@ -1812,23 +1918,45 @@ void live_hmpefx_y(Live_hmpefx*, uintptr_t);
 
 void live_hmpefx_z(Live_hmpefx*, uintptr_t);
 
+void live_hmpefx_s(Live_hmpefx *tracker, uintptr_t qubit);
+
 void live_hmpefx_sdg(Live_hmpefx *tracker, uintptr_t qubit);
-
-void live_hmpefx_sx(Live_hmpefx *tracker, uintptr_t qubit);
-
-void live_hmpefx_sxdg(Live_hmpefx *tracker, uintptr_t qubit);
-
-void live_hmpefx_sy(Live_hmpefx *tracker, uintptr_t qubit);
-
-void live_hmpefx_sydg(Live_hmpefx *tracker, uintptr_t qubit);
 
 void live_hmpefx_sz(Live_hmpefx *tracker, uintptr_t qubit);
 
 void live_hmpefx_szdg(Live_hmpefx *tracker, uintptr_t qubit);
 
+void live_hmpefx_hxy(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_h(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_sy(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_sydg(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_sh(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_hs(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_shs(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_sx(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_sxdg(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_hyz(Live_hmpefx *tracker, uintptr_t qubit);
+
+void live_hmpefx_cz(Live_hmpefx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void live_hmpefx_cx(Live_hmpefx *tracker, uintptr_t control, uintptr_t target);
 
+void live_hmpefx_cy(Live_hmpefx *tracker, uintptr_t control, uintptr_t target);
+
 void live_hmpefx_swap(Live_hmpefx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void live_hmpefx_iswap(Live_hmpefx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void live_hmpefx_iswapdg(Live_hmpefx *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void live_hmpefx_move_x_to_x(Live_hmpefx *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1875,11 +2003,7 @@ void live_bvpe_track_y(Live_bvpe *tracker, uintptr_t qubit);
 
 void live_bvpe_track_z(Live_bvpe *tracker, uintptr_t qubit);
 
-void live_bvpe_h(Live_bvpe *tracker, uintptr_t qubit);
-
-void live_bvpe_s(Live_bvpe *tracker, uintptr_t qubit);
-
-void live_bvpe_cz(Live_bvpe *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void live_bvpe_id(Live_bvpe*, uintptr_t);
 
 void live_bvpe_x(Live_bvpe*, uintptr_t);
 
@@ -1887,23 +2011,45 @@ void live_bvpe_y(Live_bvpe*, uintptr_t);
 
 void live_bvpe_z(Live_bvpe*, uintptr_t);
 
+void live_bvpe_s(Live_bvpe *tracker, uintptr_t qubit);
+
 void live_bvpe_sdg(Live_bvpe *tracker, uintptr_t qubit);
-
-void live_bvpe_sx(Live_bvpe *tracker, uintptr_t qubit);
-
-void live_bvpe_sxdg(Live_bvpe *tracker, uintptr_t qubit);
-
-void live_bvpe_sy(Live_bvpe *tracker, uintptr_t qubit);
-
-void live_bvpe_sydg(Live_bvpe *tracker, uintptr_t qubit);
 
 void live_bvpe_sz(Live_bvpe *tracker, uintptr_t qubit);
 
 void live_bvpe_szdg(Live_bvpe *tracker, uintptr_t qubit);
 
+void live_bvpe_hxy(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_h(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_sy(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_sydg(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_sh(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_hs(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_shs(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_sx(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_sxdg(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_hyz(Live_bvpe *tracker, uintptr_t qubit);
+
+void live_bvpe_cz(Live_bvpe *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void live_bvpe_cx(Live_bvpe *tracker, uintptr_t control, uintptr_t target);
 
+void live_bvpe_cy(Live_bvpe *tracker, uintptr_t control, uintptr_t target);
+
 void live_bvpe_swap(Live_bvpe *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void live_bvpe_iswap(Live_bvpe *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void live_bvpe_iswapdg(Live_bvpe *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void live_bvpe_move_x_to_x(Live_bvpe *tracker, uintptr_t source, uintptr_t destination);
 
@@ -1950,11 +2096,7 @@ void live_bvpt_track_y(Live_bvpt *tracker, uintptr_t qubit);
 
 void live_bvpt_track_z(Live_bvpt *tracker, uintptr_t qubit);
 
-void live_bvpt_h(Live_bvpt *tracker, uintptr_t qubit);
-
-void live_bvpt_s(Live_bvpt *tracker, uintptr_t qubit);
-
-void live_bvpt_cz(Live_bvpt *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+void live_bvpt_id(Live_bvpt*, uintptr_t);
 
 void live_bvpt_x(Live_bvpt*, uintptr_t);
 
@@ -1962,23 +2104,45 @@ void live_bvpt_y(Live_bvpt*, uintptr_t);
 
 void live_bvpt_z(Live_bvpt*, uintptr_t);
 
+void live_bvpt_s(Live_bvpt *tracker, uintptr_t qubit);
+
 void live_bvpt_sdg(Live_bvpt *tracker, uintptr_t qubit);
-
-void live_bvpt_sx(Live_bvpt *tracker, uintptr_t qubit);
-
-void live_bvpt_sxdg(Live_bvpt *tracker, uintptr_t qubit);
-
-void live_bvpt_sy(Live_bvpt *tracker, uintptr_t qubit);
-
-void live_bvpt_sydg(Live_bvpt *tracker, uintptr_t qubit);
 
 void live_bvpt_sz(Live_bvpt *tracker, uintptr_t qubit);
 
 void live_bvpt_szdg(Live_bvpt *tracker, uintptr_t qubit);
 
+void live_bvpt_hxy(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_h(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_sy(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_sydg(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_sh(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_hs(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_shs(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_sx(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_sxdg(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_hyz(Live_bvpt *tracker, uintptr_t qubit);
+
+void live_bvpt_cz(Live_bvpt *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
 void live_bvpt_cx(Live_bvpt *tracker, uintptr_t control, uintptr_t target);
 
+void live_bvpt_cy(Live_bvpt *tracker, uintptr_t control, uintptr_t target);
+
 void live_bvpt_swap(Live_bvpt *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void live_bvpt_iswap(Live_bvpt *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
+
+void live_bvpt_iswapdg(Live_bvpt *tracker, uintptr_t qubit_a, uintptr_t qubit_b);
 
 void live_bvpt_move_x_to_x(Live_bvpt *tracker, uintptr_t source, uintptr_t destination);
 

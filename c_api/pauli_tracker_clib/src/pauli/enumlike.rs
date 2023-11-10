@@ -65,6 +65,15 @@ impl Pauli for PauliEnum {
         }
     }
 
+    fn s(&mut self) {
+        match *self {
+            Self::I => {}
+            Self::X => *self = Self::Y,
+            Self::Z => *self = Self::Z,
+            Self::Y => *self = Self::X,
+        }
+    }
+
     fn h(&mut self) {
         match *self {
             Self::I => {}
@@ -74,12 +83,30 @@ impl Pauli for PauliEnum {
         }
     }
 
-    fn s(&mut self) {
+    fn sh(&mut self) {
+        match *self {
+            Self::I => {}
+            Self::X => *self = Self::Z,
+            Self::Z => *self = Self::Y,
+            Self::Y => *self = Self::X,
+        }
+    }
+
+    fn hs(&mut self) {
         match *self {
             Self::I => {}
             Self::X => *self = Self::Y,
-            Self::Z => *self = Self::Z,
-            Self::Y => *self = Self::X,
+            Self::Z => *self = Self::X,
+            Self::Y => *self = Self::Z,
+        }
+    }
+
+    fn shs(&mut self) {
+        match *self {
+            Self::I => {}
+            Self::X => *self = Self::X,
+            Self::Z => *self = Self::Y,
+            Self::Y => *self = Self::Z,
         }
     }
 
