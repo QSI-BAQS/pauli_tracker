@@ -17,5 +17,5 @@ bitvec = "1.0.1"
 
 [dependencies.pauli_tracker]
 version = "0.3.1"
-git = "https://github.com/taeruh/pauli_tracker"
+# git = "https://github.com/taeruh/pauli_tracker" # comment when using real release
 features = ["serde", "bitvec"]
