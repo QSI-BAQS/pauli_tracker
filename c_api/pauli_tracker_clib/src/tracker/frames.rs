@@ -1,7 +1,12 @@
 #![allow(non_camel_case_types)]
 
 use pauli_tracker::{
-    collection::Init,
+    boolean_vector::BooleanVector,
+    collection::{
+        Init,
+        IterableBase,
+    },
+    pauli::PauliStack,
     tracker::{
         frames::Frames,
         Tracker,
@@ -9,6 +14,10 @@ use pauli_tracker::{
 };
 
 use crate::{
+    boolean_vector::{
+        BitVec,
+        Vec_b,
+    },
     collection::{
         BufferedVector_psbv,
         BufferedVector_psvb,
@@ -129,3 +138,50 @@ boilerplate_vecs!(
     (Vec_psvb, vec_psvb_, RawVec_psvb),
     (Vec_psbv, vec_psbv_, RawVec_psbv),
 );
+
+pub trait Remove {
+    fn remove(&mut self, row: usize);
+}
+
+impl Remove for Vec_b {
+    fn remove(&mut self, row: usize) {
+        self.remove(row);
+    }
+}
+
+impl Remove for BitVec {
+    fn remove(&mut self, row: usize) {
+        self.remove(row);
+    }
+}
+
+/// drops the orginal Frames; the new returned one, must be dropped
+pub fn remove_row<S, B>(frames: Frames<S>, row: usize) -> Frames<S>
+where
+    S: IterableBase<T = PauliStack<B>>,
+    B: BooleanVector + Remove,
+{
+    let frames_num = frames.frames_num();
+    let mut storage = frames.into_storage();
+    for (_, stack) in storage.iter_pairs_mut() {
+        stack.left.remove(row);
+        stack.right.remove(row);
+    }
+    Frames::new_unchecked(storage, frames_num - 1)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn foo() {
+        let mut frames = Frames_hmpsvbfx::init(3);
+        frames.track_x(0);
+        frames.track_y(1);
+        frames.track_z(2);
+        println!("{:?}", frames);
+        let frames = remove_row(frames, 1);
+        println!("{:?}", frames);
+    }
+}

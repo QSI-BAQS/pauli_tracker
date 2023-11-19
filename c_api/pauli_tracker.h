@@ -1111,6 +1111,13 @@ Frames_hmpsvbfx *frames_hmpsvbfx_new_unchecked(Map_psvbfx *storage,
                                                uintptr_t num_frames);
 
 /**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_hmpsvbfx *frames_hmpsvbfx_remove_row(Frames_hmpsvbfx *frames,
+                                            uintptr_t row);
+
+/**
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_hmpsbvfx *frames_hmpsbvfx_new(void);
@@ -1230,6 +1237,13 @@ const Map_psbvfx *frames_hmpsbvfx_as_storage(Frames_hmpsbvfx *frames);
  */
 Frames_hmpsbvfx *frames_hmpsbvfx_new_unchecked(Map_psbvfx *storage,
                                                uintptr_t num_frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_hmpsbvfx *frames_hmpsbvfx_remove_row(Frames_hmpsbvfx *frames,
+                                            uintptr_t row);
 
 /**
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
@@ -1353,6 +1367,13 @@ Frames_bvpsvb *frames_bvpsvb_new_unchecked(BufferedVector_psvb *storage,
                                            uintptr_t num_frames);
 
 /**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_bvpsvb *frames_bvpsvb_remove_row(Frames_bvpsvb *frames,
+                                        uintptr_t row);
+
+/**
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_bvpsbv *frames_bvpsbv_new(void);
@@ -1472,6 +1493,13 @@ const BufferedVector_psbv *frames_bvpsbv_as_storage(Frames_bvpsbv *frames);
  */
 Frames_bvpsbv *frames_bvpsbv_new_unchecked(BufferedVector_psbv *storage,
                                            uintptr_t num_frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_bvpsbv *frames_bvpsbv_remove_row(Frames_bvpsbv *frames,
+                                        uintptr_t row);
 
 /**
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
@@ -1595,6 +1623,13 @@ Frames_mvpsvbfx *frames_mvpsvb_new_unchecked(MappedVector_psvbfx *storage,
                                              uintptr_t num_frames);
 
 /**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_mvpsvbfx *frames_mvpsvb_remove_row(Frames_mvpsvbfx *frames,
+                                          uintptr_t row);
+
+/**
  * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
  */
 Frames_mvpsbvfx *frames_mvpsbv_new(void);
@@ -1714,6 +1749,13 @@ const MappedVector_psbvfx *frames_mvpsbv_as_storage(Frames_mvpsbvfx *frames);
  */
 Frames_mvpsbvfx *frames_mvpsbv_new_unchecked(MappedVector_psbvfx *storage,
                                              uintptr_t num_frames);
+
+/**
+ * Frees the input instance.
+ * The returned instance has to be freed manually with the according `*_free` function or indirecly with another function that consumes and frees it.
+ */
+Frames_mvpsbvfx *frames_mvpsbv_remove_row(Frames_mvpsbvfx *frames,
+                                          uintptr_t row);
 
 void frames_hmpsvbfx_measure_and_store_hmfx(Frames_hmpsvbfx *frames,
                                             uintptr_t bit,

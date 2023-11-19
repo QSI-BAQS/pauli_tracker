@@ -503,6 +503,7 @@ pub fn frames(input: TokenStream) -> TokenStream {
     let into_storage = pre.name("into_storage");
     let as_storage = pre.name("as_storage");
     let new_unchecked = pre.name("new_unchecked");
+    let remove_row = pre.name("remove_row");
 
     let storage = additional.pop().unwrap();
     let pauli = additional.pop().unwrap();
@@ -550,6 +551,18 @@ pub fn frames(input: TokenStream) -> TokenStream {
             std::mem::ManuallyDrop::new(
                 Box::new(#typ::new_unchecked(*storage, num_frames))
             ).as_mut() as *mut #typ
+        }
+
+        #[doc = #FREES]
+        #[doc = #MUST_FREE]
+        #[no_mangle]
+        pub unsafe extern "C" fn #remove_row(
+            frames: *mut #typ,
+            row: usize,
+        ) -> *mut #typ {
+            let frames = unsafe { Box::from_raw(frames) };
+            let frames = remove_row(*frames, row);
+            std::mem::ManuallyDrop::new(Box::new(frames)).as_mut() as *mut #typ
         }
     }
     .into()
