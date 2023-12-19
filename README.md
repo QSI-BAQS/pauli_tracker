@@ -1,5 +1,11 @@
 # Foreign function interface for the Pauli-Tracker
 
+**This repository has been moved into https://github.com/taeruh/pauli_tracker (c_lib
+directory) and will be further developed there. This repository here is not under
+development anymore.**
+
+___
+
 **Initial phase; really, really unstable at the moment**
 
 The goal of this repository is to provide foreign language wrappers around
